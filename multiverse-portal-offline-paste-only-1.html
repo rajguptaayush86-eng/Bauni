@@ -1,0 +1,2660 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#07040d">
+<title>The Multiverse Portal</title>
+<style>
+  :root{
+    --bg:#07040d;
+    --panel:rgba(18,10,28,.88);
+    --panel2:rgba(255,255,255,.05);
+    --line:rgba(255,255,255,.12);
+    --text:#fff;
+    --muted:rgba(255,255,255,.56);
+    --purple:#a855f7;
+    --pink:#ec4899;
+    --danger:#fda4af;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;width:100%}
+  body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden;padding-bottom:110px;-webkit-tap-highlight-color:transparent}
+  button,input,textarea{font:inherit}
+  button{cursor:pointer}
+
+  #bgLayer{position:fixed;inset:0;z-index:-20;overflow:hidden;background:
+    radial-gradient(circle at 18% 12%,rgba(168,85,247,.24),transparent 44%),
+    radial-gradient(circle at 82% 14%,rgba(236,72,153,.16),transparent 42%),
+    radial-gradient(circle at 50% 100%,rgba(79,70,229,.14),transparent 48%),
+    var(--bg)}
+  #bgImage,#bgVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;filter:brightness(.62) saturate(1.08)}
+  .bgShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,10,.38),rgba(5,3,10,.82))}
+  .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;pointer-events:none}
+  .orb.one{width:260px;height:260px;background:#9333ea;left:-110px;top:18%;animation:drift1 11s ease-in-out infinite alternate}
+  .orb.two{width:260px;height:260px;background:#db2777;right:-110px;bottom:15%;animation:drift2 13s ease-in-out infinite alternate}
+  @keyframes drift1{to{transform:translate(120px,60px) scale(1.18)}}
+  @keyframes drift2{to{transform:translate(-90px,-70px) scale(1.2)}}
+
+  header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:max(12px,env(safe-area-inset-top)) 14px 12px;background:rgba(7,4,13,.76);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+  .logoRow{display:flex;align-items:center;gap:9px}
+  .logoMark{width:34px;height:34px;border-radius:50%;flex:0 0 auto;background:linear-gradient(135deg,var(--purple),var(--pink));background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden}
+  .logo{font:700 18px/1 Georgia,"Times New Roman",serif;letter-spacing:.4px;white-space:nowrap}
+  .logo span{display:block;margin-top:4px;font:8px/1 Inter,sans-serif;letter-spacing:3px;color:#f0abfc}
+  .headBtns{display:flex;gap:7px}
+
+  .themeSlotCard{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;background:rgba(255,255,255,.03)}
+  .themeSlotHead{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .themeSlotPreview{width:44px;height:44px;border-radius:10px;flex:0 0 auto;background:linear-gradient(135deg,var(--purple),var(--pink));background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden}
+  .themeSlotName{font-size:13px;font-weight:700}
+  .themeSlotDesc{font-size:11px;color:var(--muted);margin-top:2px}
+  .themeSlotBtns{display:flex;gap:6px;flex-wrap:wrap}
+
+  .btn{border:0;border-radius:11px;padding:10px 14px;color:#fff;background:linear-gradient(135deg,var(--purple),var(--pink));box-shadow:0 7px 22px rgba(168,85,247,.16);font-size:13px;font-weight:600;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:active{transform:scale(.95)}
+  .btn.secondary{background:rgba(255,255,255,.07);border:1px solid var(--line)}
+  .btn.danger{background:rgba(239,68,68,.08);color:var(--danger);border:1px solid rgba(251,113,133,.28)}
+  .btn.small{padding:8px 11px;font-size:12px}
+  .btn.full{width:100%}
+
+  main{width:min(900px,100%);margin:auto;padding:20px 13px calc(55px + env(safe-area-inset-bottom))}
+  .hero{position:relative;overflow:hidden;padding:30px 18px;margin-bottom:22px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(140deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:0 20px 70px rgba(0,0,0,.22)}
+  .hero h1{font:700 clamp(32px,8vw,48px)/1.05 Georgia,"Times New Roman",serif;margin-bottom:9px;position:relative;z-index:1}
+  .hero h1 span{background:linear-gradient(90deg,#f0abfc,#c084fc,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{position:relative;z-index:1;color:var(--muted);font-size:14px;line-height:1.55;margin-bottom:17px}
+  .heroBtns{display:flex;gap:7px;flex-wrap:wrap}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+  .toolbar h2{font:700 21px/1 Georgia,"Times New Roman",serif}
+  #search{width:190px;max-width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;outline:none;color:#fff;background:rgba(255,255,255,.05)}
+  #search:focus,input:focus,textarea:focus{border-color:rgba(240,171,252,.5);box-shadow:0 0 0 3px rgba(168,85,247,.08)}
+  #search::placeholder,input::placeholder,textarea::placeholder{color:rgba(255,255,255,.32)}
+
+  .card{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.045);margin-bottom:13px;box-shadow:0 12px 40px rgba(0,0,0,.14);animation:cardIn .28s ease both}
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .cardMedia{height:180px;background:#160d25;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .cardMedia img,.cardMedia video{width:100%;height:100%;min-width:100%;min-height:100%;object-fit:cover;display:block}
+  .cardBody{padding:14px}
+  .cardTitle{font:700 19px/1.1 Georgia,"Times New Roman",serif;margin-bottom:5px}
+  .cardDesc{font-size:12.5px;line-height:1.5;color:var(--muted);margin-bottom:7px}
+  .cardUrl{font-size:11px;color:#f0abfc;word-break:break-all;margin-bottom:11px}
+  .cardCreated{font-size:10.5px;color:var(--muted);margin-bottom:9px;opacity:.8}
+  .cardActions{display:flex;gap:7px}
+  .dragHandle{position:absolute;top:8px;right:8px;z-index:3;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-radius:8px;color:var(--muted);font-size:18px;cursor:grab;user-select:none;touch-action:none}
+  .card.dragging{opacity:.4}
+  .card.dragOver{outline:2px dashed var(--purple);outline-offset:-2px}
+  .cardActions .btn{flex:1}
+  .empty{text-align:center;padding:36px 14px;color:var(--muted);border:1px dashed rgba(240,180,255,.2);border-radius:13px;line-height:1.7}
+
+  .panel{margin-top:16px;padding:17px;border-radius:16px;border:1px solid var(--line);background:rgba(12,7,20,.94);box-shadow:0 22px 70px rgba(0,0,0,.28)}
+  .panel h2{font:700 21px/1 Georgia,"Times New Roman",serif;margin-bottom:14px}
+  .hidden{display:none !important}
+  .group{margin-bottom:11px}
+  .label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+  .input,.textarea,.codeArea{width:100%;border:1px solid var(--line);outline:0;border-radius:9px;padding:10px 12px;color:#fff;background:rgba(255,255,255,.045)}
+  select.input{color-scheme:dark}
+  select.input option{background:#1a0f28;color:#fff}
+  .textarea{min-height:74px;resize:vertical}
+  .codeArea{min-height:95px;font-size:11px;resize:vertical}
+
+  .mediaPickGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .filePick{min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;padding:9px;border:1px dashed rgba(240,180,255,.25);border-radius:9px;background:rgba(255,255,255,.035);font-size:11px;cursor:pointer}
+  .filePick:active{transform:scale(.98)}
+  .filePick input{display:none}
+  .preview{display:none;margin-top:9px;border-radius:10px;overflow:hidden;background:#0a0710;border:1px solid rgba(255,255,255,.08)}
+  .preview img,.preview video{display:block;width:100%;max-height:240px;object-fit:cover}
+  .msg{display:none;margin-top:9px;padding:9px 11px;border-radius:8px;font-size:12px}
+  .msg.error{display:block;background:rgba(239,68,68,.13);color:#fca5a5}
+  .msg.ok{display:block;background:rgba(34,197,94,.13);color:#86efac}
+
+  .shareHelp{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:10px}
+  .historyItem{padding:11px 12px;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.035)}
+  .historyTitle{font-size:13px;font-weight:700;margin-bottom:4px}
+  .historyMeta{font-size:11px;color:var(--muted);line-height:1.5}
+
+  /* No #connectPanelWrapper in this offline build — Firebase Link was removed. */
+
+  #musicButton {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    border: 1px solid var(--line);
+    font-size: 22px;
+    box-shadow: 0 10px 30px rgba(168,85,247,0.4);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+  }
+  #musicButton.playing {
+    animation: pulseGlow 2s infinite alternate, notebob 1.1s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    from { box-shadow: 0 0 15px rgba(168,85,247,0.5); }
+    to { box-shadow: 0 0 28px rgba(236,72,153,0.8); }
+  }
+  @keyframes notebob {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-3px) scale(1.06); }
+  }
+  #musicButton:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+  }
+  #songSettingsBtn{position:fixed;bottom:24px;right:82px;z-index:1000;width:34px;height:34px;border-radius:50%;background:rgba(18,10,28,.88);color:#fff;border:1px solid var(--line);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+  #songSettingsBtn:active{transform:scale(0.92)}
+
+  .ripple{position:fixed;z-index:5000;pointer-events:none;width:0;height:0;border:2px solid rgba(192,132,252,.8);border-radius:50%;transform:translate(-50%,-50%);animation:ripple .92s ease-out forwards}
+  @keyframes ripple{to{width:205px;height:205px;opacity:0}}
+  .floatText{position:fixed;z-index:5001;pointer-events:none;white-space:nowrap;max-width:90vw;font:700 clamp(16px,4.5vw,24px) Georgia,"Times New Roman",serif;text-shadow:0 0 10px rgba(255,255,255,.6),0 0 22px rgba(236,72,153,.65);animation:floatText 2.7s ease-out forwards}
+  @keyframes floatText{0%{opacity:0;transform:translate(-50%,0) scale(.5)}20%{opacity:1;transform:translate(-50%,-14px) scale(1.04)}100%{opacity:0;transform:translate(-50%,-122px) scale(.9)}}
+
+  .smallNote{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}
+
+  @media(max-width:600px){
+    .logo{font-size:16px}
+    .headBtns .btn{padding:8px 10px;font-size:11px}
+    main{padding-left:11px;padding-right:11px}
+    .hero{padding:27px 16px}
+    .heroBtns{flex-direction:column}
+    .heroBtns .btn{width:100%}
+    #search{width:100%}
+    .mediaPickGrid{grid-template-columns:1fr}
+    .cardMedia{height:165px}
+    .cardActions{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div id="bgLayer">
+  <img id="bgImage" alt="Portal Background">
+  <video id="bgVideo" muted loop playsinline></video>
+  <div class="bgShade"></div>
+</div>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<header>
+  <div class="logoRow">
+    <div id="logoMark" class="logoMark">🌌</div>
+    <div class="logo"><span id="logoMainText">THE MULTIVERSE</span><span id="logoSubText">PORTAL</span></div>
+  </div>
+  <div class="headBtns">
+    <button id="historyBtn" class="btn secondary" type="button">History</button>
+    <button id="shareBtn" class="btn secondary" type="button">Share</button>
+    <button id="textBtn" class="btn secondary" type="button">✏️</button>
+    <button id="visualThemeBtn" class="btn secondary" type="button">🎨</button>
+    <button id="tapNamesBtn" class="btn secondary" type="button" title="Change the names/words/emojis that appear when you tap the screen">🏷️</button>
+    <button id="addBtn" class="btn" type="button">+ Add</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1><span id="heroTitleLead">Enter the </span><span id="heroTitleHighlight">unknown.</span></h1>
+    <p id="heroSubtitle">Tap anywhere for soft circles &amp; names. Build, customize and expand your multiverse.</p>
+    <div class="heroBtns">
+      <button id="createBtn" class="btn" type="button">✦ Create Universe</button>
+      <button id="portalBtn" class="btn secondary" type="button">🌌 Customize Multiverse</button>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <h2 id="listTitle">Your Universes</h2>
+    <input id="search" type="search" placeholder="Search..." autocomplete="off">
+  </div>
+
+  <div class="group" style="margin-bottom:13px">
+    <label class="label" for="sortMode">Order</label>
+    <select id="sortMode" class="input">
+      <option value="newest">Newest first (default)</option>
+      <option value="oldest">Oldest first</option>
+      <option value="manual">Custom (drag to reorder)</option>
+    </select>
+  </div>
+
+  <div id="list"></div>
+
+  <section id="universePanel" class="panel hidden">
+    <h2 id="universePanelTitle">New Universe</h2>
+
+    <div class="group">
+      <label class="label" for="name">Name *</label>
+      <input id="name" class="input" type="text" placeholder="My World" autocomplete="off">
+    </div>
+
+    <div class="group">
+      <label class="label" for="url">Website URL *</label>
+      <input id="url" class="input" type="text" placeholder="https://..." inputmode="url" autocomplete="off">
+    </div>
+
+    <div class="group">
+      <label class="label" for="desc">Description</label>
+      <textarea id="desc" class="textarea" placeholder="Optional..."></textarea>
+    </div>
+
+    <div class="group">
+      <label class="label" id="mediaLabel">Universe Photo / Video</label>
+      <div class="mediaPickGrid">
+        <label class="filePick">📷 Camera<input id="uCamera" type="file" accept="image/*" capture="environment"></label>
+        <label class="filePick">🖼️ Gallery<input id="uGallery" type="file" accept="image/*,video/*"></label>
+        <label class="filePick">📁 Files<input id="uFiles" type="file" accept="*/*"></label>
+      </div>
+      <div id="uPreview" class="preview"></div>
+      <button id="uRemoveMedia" class="btn danger full" type="button" style="margin-top:8px">✕ Remove Media</button>
+      <div id="mediaNote" class="smallNote">There is no hard-coded universe count or media count. Your browser storage quota is the only practical limit.</div>
+    </div>
+
+    <div id="formMsg" class="msg"></div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <button id="saveBtn" class="btn" type="button">Save Universe</button>
+      <button id="cancelBtn" class="btn secondary" type="button">Cancel</button>
+    </div>
+  </section>
+
+  <section id="portalPanel" class="panel hidden">
+    <h2 id="portalPanelTitle">🌌 Multiverse Appearance</h2>
+    <p id="portalPanelHelp" class="shareHelp">Change the visual background of the entire portal. Use camera, gallery or files for a photo or video.</p>
+
+    <div class="mediaPickGrid">
+      <label class="filePick">📷 Camera<input id="pCamera" type="file" accept="image/*" capture="environment"></label>
+      <label class="filePick">🖼️ Gallery<input id="pGallery" type="file" accept="image/*,video/*"></label>
+      <label class="filePick">📁 Files<input id="pFiles" type="file" accept="*/*"></label>
+    </div>
+
+    <div id="pPreview" class="preview"></div>
+    <button id="pRemove" class="btn danger full" type="button" style="margin-top:8px">✕ Remove Portal Media</button>
+    <div id="pMsg" class="msg"></div>
+    <div id="storageInfo" class="smallNote"></div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <button id="pSave" class="btn" type="button">Save Multiverse Appearance</button>
+      <button id="pClose" class="btn secondary" type="button">Close</button>
+    </div>
+  </section>
+
+  <section id="historyPanel" class="panel hidden">
+    <h2 id="historyPanelTitle">🕘 Universe History</h2>
+    <div id="historySummary" class="shareHelp">No history yet.</div>
+    <div id="historyList"></div>
+    <button id="clearHistory" class="btn danger full" type="button" style="margin-top:10px">Clear History</button>
+    <button id="closeHistory" class="btn secondary full" type="button" style="margin-top:8px">Close</button>
+  </section>
+
+  <section id="sharePanel" class="panel hidden">
+    <h2 id="sharePanelTitle">🔗 Share / Import</h2>
+    <p id="sharePanelHelp" class="shareHelp">Share codes contain universe metadata. Large local photos/videos remain on the device.</p>
+
+    <div class="group">
+      <label class="label" for="shareCode">Your Share Code</label>
+      <textarea id="shareCode" class="codeArea" readonly></textarea>
+      <button id="copyBtn" class="btn full" type="button" style="margin-top:7px">Copy Code</button>
+    </div>
+
+    <div class="group" style="margin-top:14px">
+      <label class="label" for="importCode">Paste Code to Import</label>
+      <textarea id="importCode" class="codeArea" placeholder="Paste code here..."></textarea>
+      <label class="label" for="importTag" style="margin-top:10px">Friend Tag (optional)</label>
+      <input id="importTag" class="input" type="text" maxlength="40" placeholder="e.g. Ayush, 🐣, sweetheart, 7" autocomplete="off">
+      <div class="smallNote">Give this friend a tag once. Next time they send you an updated code, use the same tag and paste the new code — their universes update in place instead of duplicating, and no one needs to remember or re-share the original code.</div>
+      <button id="importBtn" class="btn full" type="button" style="margin-top:7px">Import</button>
+    </div>
+
+    <div id="friendTagsSection" style="margin-top:16px">
+      <div class="label">Saved Friend Tags</div>
+      <div id="friendTagsList"></div>
+    </div>
+
+    <button id="closeShare" class="btn secondary full" type="button">Close</button>
+  </section>
+
+  <section id="textPanel" class="panel hidden">
+    <h2 id="textPanelTitle">✏️ Customize Text</h2>
+    <p id="textPanelHelp" class="shareHelp">Rename anything shown across the app. Leave a field blank to use the default.</p>
+    <div id="textFields"></div>
+
+    <div class="label" style="margin-top:16px">Tap-Anywhere Names</div>
+    <p class="smallNote">One name/word/emoji per line. These appear randomly when you tap empty space on the page. Leave empty to use the built-in defaults.</p>
+    <textarea id="tapNamesArea" class="codeArea" placeholder="One per line..." style="min-height:160px"></textarea>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      <button id="saveTapNamesBtn" class="btn secondary" type="button">Save Tap Names</button>
+      <button id="resetTapNamesBtn" class="btn danger" type="button">Reset Tap Names to Default</button>
+    </div>
+
+    <div id="textMsg" class="msg"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <button id="saveTextBtn" class="btn" type="button">Save Text</button>
+      <button id="resetTextBtn" class="btn danger" type="button">Reset to Default</button>
+      <button id="closeText" class="btn secondary" type="button">Close</button>
+    </div>
+  </section>
+
+  <section id="visualThemePanel" class="panel hidden">
+    <h2>🎨 Customize Visuals</h2>
+    <p class="shareHelp">Replace any icon below with your own photo using Camera, Gallery, or Files. Reset any one back to its default anytime.</p>
+    <div id="themeSlotsList"></div>
+    <div id="visualThemeMsg" class="msg"></div>
+    <button id="closeVisualTheme" class="btn secondary full" type="button" style="margin-top:6px">Close</button>
+  </section>
+
+  <section id="songPanel" class="panel hidden">
+    <h2>🎵 Set Ambient Song</h2>
+    <p class="shareHelp">Paste any YouTube, SoundCloud, Spotify, or Vimeo link. The music button will play it on tap.</p>
+    <div class="group">
+      <label class="label" for="songLinkInput">Song / video link</label>
+      <input id="songLinkInput" class="input" type="text" placeholder="https://youtu.be/... or SoundCloud/Spotify/Vimeo link" autocomplete="off">
+    </div>
+    <div id="songMsg" class="msg"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      <button id="saveSongBtn" class="btn" type="button">Save Song</button>
+      <button id="resetSongBtn" class="btn danger" type="button">Reset to Default Song</button>
+      <button id="openPlaylistBtn" class="btn secondary" type="button">🎧 My Playlist</button>
+      <button id="closeSongPanel" class="btn secondary" type="button">Close</button>
+    </div>
+  </section>
+
+  <section id="playlistPanel" class="panel hidden">
+    <h2>🎧 My Playlist</h2>
+    <p class="shareHelp">Every song you've saved. Tap Play on any of them anytime — no need to paste the link again.</p>
+    <div id="playlistList"></div>
+    <div id="playlistMsg" class="msg"></div>
+    <button id="closePlaylist" class="btn secondary full" type="button" style="margin-top:8px">Close</button>
+  </section>
+
+  <section id="tapNamesPanel" class="panel hidden">
+    <h2>🏷️ Tap-Anywhere Names</h2>
+    <p class="shareHelp">One name, word, or emoji per line. One of these appears randomly whenever you tap empty space on the page. Leave empty to use the built-in defaults.</p>
+    <textarea id="tapNamesPanelArea" class="codeArea" placeholder="One per line..." style="min-height:220px"></textarea>
+    <div id="tapNamesPanelMsg" class="msg"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      <button id="saveTapNamesPanelBtn" class="btn" type="button">Save</button>
+      <button id="resetTapNamesPanelBtn" class="btn danger" type="button">Reset to Default</button>
+      <button id="closeTapNamesPanel" class="btn secondary" type="button">Close</button>
+    </div>
+  </section>
+</main>
+
+
+<!-- Offline build: no Firebase SDK loaded. Sharing between people happens
+     entirely via the manual Share/Import codes and Friend Tags below. -->
+
+<button id="musicButton" type="button" aria-label="Toggle Ambient Audio" title="Drag to move | Click to play ambient sound">🌙</button>
+<button id="songSettingsBtn" type="button" aria-label="Change ambient song" title="Set your own song link">♪+</button>
+<div id="ytAudioPlayer" style="position:fixed;width:0;height:0;overflow:hidden;pointer-events:none;left:-9999px;top:-9999px"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  const objectUrlBuckets = new Map(); // bucket name -> Set<url>
+  let portalBgObjectUrl = null;
+
+  function createObjectURL(blob, bucket = 'card') {
+    if(!blob) return '';
+    try {
+      const url = (window.URL || window.webkitURL).createObjectURL(blob);
+      if(!url) return '';
+      if(!objectUrlBuckets.has(bucket)) objectUrlBuckets.set(bucket, new Set());
+      objectUrlBuckets.get(bucket).add(url);
+      return url;
+    } catch(e) {
+      console.warn('Could not create object URL:', e);
+      return '';
+    }
+  }
+
+  function clearObjectURLBucket(bucket = 'card') {
+    const set = objectUrlBuckets.get(bucket);
+    if(!set) return;
+    for (const url of set) {
+      try { (window.URL || window.webkitURL).revokeObjectURL(url); } catch(_) {}
+    }
+    set.clear();
+  }
+
+  // ---- Ambient song (any platform link) ------------------------------------
+  // Detects the platform from a pasted URL and builds the right embed. YouTube,
+  // SoundCloud, and Vimeo all support full programmatic play/pause/loop from
+  // JS. Spotify's public embed does NOT allow unattended autoplay or JS control
+  // for non-Premium/OAuth users — for a Spotify link we show its official
+  // embedded player with a visible Play button instead of faking automation
+  // that isn't actually possible; this is disclosed in the panel copy, not
+  // hidden.
+  const DEFAULT_SONG = { platform: 'youtube', id: '8F7Q-4PZCjA', url: 'https://youtu.be/8F7Q-4PZCjA' };
+  let currentSong = Object.assign({}, DEFAULT_SONG);
+
+  function detectSongPlatform(rawUrl){
+    let url;
+    try{ url = new URL(rawUrl); }catch(_){ return null; }
+    const host = url.hostname.replace(/^www\./,'').toLowerCase();
+
+    if(host === 'youtu.be'){
+      const id = url.pathname.slice(1).split('/')[0];
+      if(id) return {platform:'youtube', id, url: rawUrl};
+    }
+    if(host.endsWith('youtube.com')){
+      const id = url.searchParams.get('v') || (url.pathname.startsWith('/shorts/') ? url.pathname.split('/')[2] : null) || (url.pathname.startsWith('/embed/') ? url.pathname.split('/')[2] : null);
+      if(id) return {platform:'youtube', id, url: rawUrl};
+    }
+    if(host.endsWith('vimeo.com')){
+      const match = url.pathname.match(/(\d+)/);
+      if(match) return {platform:'vimeo', id: match[1], url: rawUrl};
+    }
+    if(host.endsWith('soundcloud.com')){
+      return {platform:'soundcloud', id: rawUrl, url: rawUrl};
+    }
+    if(host.endsWith('spotify.com')){
+      const match = url.pathname.match(/\/(track|playlist|album)\/([a-zA-Z0-9]+)/);
+      if(match) return {platform:'spotify', id: match[1] + '/' + match[2], url: rawUrl};
+    }
+    return null;
+  }
+
+  let ytPlayer = null;
+  let ytApiReady = false;
+  let ytApiLoading = false;
+  let vimeoPlayer = null;
+  let vimeoApiReady = false;
+  let vimeoApiLoading = false;
+  let scWidget = null;
+  let scApiReady = false;
+  let scApiLoading = false;
+  let isPlayingAudio = false;
+  let pendingPlayAfterReady = false;
+
+  function setMusicButtonState(playing, note){
+    const btn = document.getElementById('musicButton');
+    if(!btn) return;
+    if(playing){ btn.classList.add('playing'); btn.textContent = '🎶'; }
+    else{ btn.classList.remove('playing'); btn.textContent = '🌙'; }
+    btn.title = note || 'Drag to move | Click to play ambient sound';
+  }
+
+  function loadScript(src, onload, onerror){
+    const tag = document.createElement('script');
+    tag.src = src;
+    tag.onload = onload;
+    tag.onerror = onerror;
+    document.head.appendChild(tag);
+  }
+
+  // -- YouTube --
+  function loadYouTubeAPI(){
+    if(ytPlayer){ startPlayback(); return; } // already have a player for the current song
+    if(window.YT && window.YT.Player){
+      // The IFrame API script is already loaded from a previous song — YouTube
+      // only ever calls onYouTubeIframeAPIReady once per page load, so on any
+      // song after the first we must create the player directly instead of
+      // waiting for a callback that will never fire again.
+      createYouTubePlayer();
+      return;
+    }
+    if(ytApiLoading) return;
+    ytApiLoading = true;
+    loadScript('https://www.youtube.com/iframe_api', null, () => {
+      ytApiLoading = false;
+      pendingPlayAfterReady = false;
+      console.warn('Could not load the YouTube player API (network unavailable or blocked).');
+      setMusicButtonState(false, 'Music unavailable — could not reach YouTube.');
+    });
+    setTimeout(() => { if(!ytApiReady && ytApiLoading) ytApiLoading = false; }, 10000);
+  }
+
+  function createYouTubePlayer(){
+    ytApiReady = true;
+    ytApiLoading = false;
+    ytPlayer = new YT.Player('ytAudioPlayer', {
+      height: '0', width: '0', videoId: currentSong.id,
+      playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: () => { if(pendingPlayAfterReady){ pendingPlayAfterReady = false; startPlayback(); } },
+        onStateChange: (e) => { if(e.data === YT.PlayerState.ENDED) ytPlayer.playVideo(); },
+        onError: (e) => {
+          console.warn('YouTube playback error:', e.data);
+          stopAmbientAudio();
+          setMusicButtonState(false, 'This track could not be played (video unavailable or embedding restricted).');
+        }
+      }
+    });
+  }
+
+  window.onYouTubeIframeAPIReady = function(){
+    createYouTubePlayer();
+  };
+
+  // -- Vimeo --
+  function loadVimeoAPI(){
+    if(vimeoApiReady || vimeoApiLoading) return;
+    vimeoApiLoading = true;
+    loadScript('https://player.vimeo.com/api/player.js', () => {
+      vimeoApiReady = true;
+      vimeoApiLoading = false;
+      const iframe = document.createElement('iframe');
+      iframe.id = 'vimeoAudioPlayer';
+      iframe.src = 'https://player.vimeo.com/video/' + currentSong.id + '?autoplay=0&loop=1&controls=0';
+      iframe.style.cssText = 'width:1px;height:1px;position:fixed;left:-9999px;top:-9999px';
+      iframe.allow = 'autoplay';
+      document.body.appendChild(iframe);
+      vimeoPlayer = new Vimeo.Player(iframe);
+      vimeoPlayer.on('error', err => {
+        console.warn('Vimeo playback error:', err);
+        stopAmbientAudio();
+        setMusicButtonState(false, 'This video could not be played (unavailable or embedding restricted).');
+      });
+      if(pendingPlayAfterReady){ pendingPlayAfterReady = false; startPlayback(); }
+    }, () => {
+      vimeoApiLoading = false;
+      pendingPlayAfterReady = false;
+      console.warn('Could not load the Vimeo player API.');
+      setMusicButtonState(false, 'Music unavailable — could not reach Vimeo.');
+    });
+    setTimeout(() => { if(!vimeoApiReady && vimeoApiLoading) vimeoApiLoading = false; }, 10000);
+  }
+
+  // -- SoundCloud --
+  function loadSoundCloudAPI(){
+    if(scApiReady || scApiLoading) return;
+    scApiLoading = true;
+    loadScript('https://w.soundcloud.com/player/api.js', () => {
+      scApiReady = true;
+      scApiLoading = false;
+      const iframe = document.createElement('iframe');
+      iframe.id = 'scAudioPlayer';
+      iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(currentSong.id) + '&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false';
+      iframe.style.cssText = 'width:1px;height:1px;position:fixed;left:-9999px;top:-9999px';
+      iframe.allow = 'autoplay';
+      document.body.appendChild(iframe);
+      scWidget = SC.Widget(iframe);
+      scWidget.bind(SC.Widget.Events.FINISH, () => { try{ scWidget.seekTo(0); scWidget.play(); }catch(_){} });
+      scWidget.bind(SC.Widget.Events.ERROR, () => {
+        console.warn('SoundCloud playback error');
+        stopAmbientAudio();
+        setMusicButtonState(false, 'This track could not be played (unavailable or embedding restricted).');
+      });
+      if(pendingPlayAfterReady){ pendingPlayAfterReady = false; startPlayback(); }
+    }, () => {
+      scApiLoading = false;
+      pendingPlayAfterReady = false;
+      console.warn('Could not load the SoundCloud player API.');
+      setMusicButtonState(false, 'Music unavailable — could not reach SoundCloud.');
+    });
+    setTimeout(() => { if(!scApiReady && scApiLoading) scApiLoading = false; }, 10000);
+  }
+
+  function startPlayback(){
+    try{
+      if(currentSong.platform === 'youtube' && ytPlayer){ ytPlayer.playVideo(); }
+      else if(currentSong.platform === 'vimeo' && vimeoPlayer){ vimeoPlayer.play().catch(()=>{}); }
+      else if(currentSong.platform === 'soundcloud' && scWidget){ scWidget.play(); }
+      else{ return; }
+      isPlayingAudio = true;
+      setMusicButtonState(true);
+    }catch(e){ console.warn('Could not start playback:', e); }
+  }
+
+  function toggleAmbientAudio(){
+    if(currentSong.platform === 'spotify'){
+      // Spotify's public embed cannot be autoplayed or JS-controlled for
+      // regular listeners — open its own player panel instead of pretending
+      // the button can drive it directly.
+      $('songPanel').classList.remove('hidden');
+      $('songPanel').scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    if(isPlayingAudio){ stopAmbientAudio(); return; }
+
+    if(currentSong.platform === 'youtube'){
+      if(!ytApiReady || !ytPlayer){ pendingPlayAfterReady = true; loadYouTubeAPI(); return; }
+    }else if(currentSong.platform === 'vimeo'){
+      if(!vimeoApiReady || !vimeoPlayer){ pendingPlayAfterReady = true; loadVimeoAPI(); return; }
+    }else if(currentSong.platform === 'soundcloud'){
+      if(!scApiReady || !scWidget){ pendingPlayAfterReady = true; loadSoundCloudAPI(); return; }
+    }
+    startPlayback();
+  }
+
+  function stopAmbientAudio(){
+    isPlayingAudio = false;
+    pendingPlayAfterReady = false;
+    try{
+      if(currentSong.platform === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
+      else if(currentSong.platform === 'vimeo' && vimeoPlayer) vimeoPlayer.pause().catch(()=>{});
+      else if(currentSong.platform === 'soundcloud' && scWidget) scWidget.pause();
+    }catch(_){}
+    setMusicButtonState(false);
+  }
+
+  // Tears down whichever platform's player is currently mounted so a newly
+  // saved song starts from a clean slate instead of two players existing at once.
+  function teardownCurrentPlayer(){
+    stopAmbientAudio();
+    try{ if(ytPlayer && typeof ytPlayer.destroy === 'function') ytPlayer.destroy(); }catch(_){}
+    ytPlayer = null; ytApiReady = false; ytApiLoading = false;
+    const yt = document.getElementById('ytAudioPlayer');
+    if(yt){ yt.innerHTML = ''; }
+    try{ const vf = document.getElementById('vimeoAudioPlayer'); if(vf) vf.remove(); }catch(_){}
+    vimeoPlayer = null; vimeoApiReady = false; vimeoApiLoading = false;
+    try{ const scf = document.getElementById('scAudioPlayer'); if(scf) scf.remove(); }catch(_){}
+    scWidget = null; scApiReady = false; scApiLoading = false;
+  }
+
+  async function loadCustomSong(){
+    const saved = await loadSetting('customSong');
+    currentSong = saved && saved.platform && saved.id ? saved : Object.assign({}, DEFAULT_SONG);
+  }
+
+  async function saveCustomSong(rawUrl){
+    const detected = detectSongPlatform(rawUrl.trim());
+    if(!detected) return {ok:false, error:'Could not recognize that link. Paste a YouTube, SoundCloud, Spotify, or Vimeo link.'};
+    teardownCurrentPlayer();
+    currentSong = detected;
+    await saveSetting('customSong', detected);
+    await addToPlaylist(detected);
+    return {ok:true, platform:detected.platform};
+  }
+
+  async function resetCustomSong(){
+    teardownCurrentPlayer();
+    currentSong = Object.assign({}, DEFAULT_SONG);
+    await saveSetting('customSong', null);
+  }
+
+  // ---- Playlist & favorites -------------------------------------------------
+  // Every song link the user has ever saved lives here, keyed by platform+id so
+  // pasting the same link twice updates one entry instead of duplicating it.
+  // This is what makes "paste once, play anytime after" work — playing a saved
+  // entry never needs the link again.
+  function playlistKeyFor(song){ return song.platform + ':' + song.id; }
+
+  async function loadPlaylist(){
+    return (await loadSetting('songPlaylist')) || [];
+  }
+
+  async function savePlaylist(list){
+    await saveSetting('songPlaylist', list);
+  }
+
+  async function addToPlaylist(song, extra){
+    const list = await loadPlaylist();
+    const key = playlistKeyFor(song);
+    const existingIdx = list.findIndex(s => playlistKeyFor(s) === key);
+    if(existingIdx > -1){
+      list[existingIdx] = Object.assign({}, list[existingIdx], song, extra || {}, {lastUsed: Date.now()});
+    }else{
+      list.unshift(Object.assign({
+        platform: song.platform, id: song.id, url: song.url,
+        title: (extra && extra.title) || song.url,
+        favorite: false, added: Date.now(), lastUsed: Date.now()
+      }, extra || {}));
+    }
+    await savePlaylist(list);
+    return list;
+  }
+
+  async function removeFromPlaylist(key){
+    const list = await loadPlaylist();
+    await savePlaylist(list.filter(s => playlistKeyFor(s) !== key));
+  }
+
+  async function toggleFavorite(key){
+    const list = await loadPlaylist();
+    const entry = list.find(s => playlistKeyFor(s) === key);
+    if(entry) entry.favorite = !entry.favorite;
+    await savePlaylist(list);
+    return entry ? entry.favorite : false;
+  }
+
+  async function playFromPlaylist(key){
+    const list = await loadPlaylist();
+    const entry = list.find(s => playlistKeyFor(s) === key);
+    if(!entry) return {ok:false, error:'That song is no longer in your playlist.'};
+    teardownCurrentPlayer();
+    currentSong = {platform: entry.platform, id: entry.id, url: entry.url};
+    await saveSetting('customSong', currentSong);
+    entry.lastUsed = Date.now();
+    await savePlaylist(list);
+    if(currentSong.platform === 'spotify'){
+      return {ok:true, platform:'spotify'};
+    }
+    pendingPlayAfterReady = true;
+    if(currentSong.platform === 'youtube') loadYouTubeAPI();
+    else if(currentSong.platform === 'vimeo') loadVimeoAPI();
+    else if(currentSong.platform === 'soundcloud') loadSoundCloudAPI();
+    return {ok:true, platform:currentSong.platform};
+  }
+
+  async function renderPlaylist(){
+    const container = $('playlistList');
+    const list = await loadPlaylist();
+    if(!list.length){
+      container.innerHTML = '<div class="smallNote">No songs saved yet. Save one from the 🎵 Set Ambient Song panel.</div>';
+      return;
+    }
+    const sorted = list.slice().sort((a,b) => (b.favorite?1:0) - (a.favorite?1:0) || (b.lastUsed||0) - (a.lastUsed||0));
+    container.innerHTML = '';
+    for(const entry of sorted){
+      const key = playlistKeyFor(entry);
+      const item = document.createElement('div');
+      item.className = 'historyItem';
+      const platformLabel = entry.platform.charAt(0).toUpperCase() + entry.platform.slice(1);
+      item.innerHTML = '<div class="historyTitle">' + (entry.favorite ? '⭐ ' : '') + escapeHTML(platformLabel) + '</div><div class="historyMeta">' + escapeHTML(entry.url) + '</div>';
+
+      const actions = document.createElement('div');
+      actions.className = 'cardActions';
+      actions.style.marginTop = '8px';
+
+      const playBtn = document.createElement('button');
+      playBtn.type = 'button';
+      playBtn.className = 'btn small';
+      playBtn.textContent = '▶ Play';
+      playBtn.addEventListener('click', async () => {
+        const result = await playFromPlaylist(key);
+        if(!result.ok){ showMsg('playlistMsg', result.error, 'error'); return; }
+        if(result.platform === 'spotify'){
+          showMsg('playlistMsg', 'Opening Spotify\'s player — tap play there.', 'ok');
+          closePanels();
+          $('songPanel').classList.remove('hidden');
+        }else{
+          showMsg('playlistMsg', 'Now playing.', 'ok');
+        }
+      });
+
+      const favBtn = document.createElement('button');
+      favBtn.type = 'button';
+      favBtn.className = 'btn secondary small';
+      favBtn.textContent = entry.favorite ? '★ Favorited' : '☆ Favorite';
+      favBtn.addEventListener('click', async () => {
+        await toggleFavorite(key);
+        await renderPlaylist();
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn danger small';
+      removeBtn.textContent = 'Remove';
+      removeBtn.addEventListener('click', async () => {
+        if(!confirm('Remove this song from your playlist?')) return;
+        await removeFromPlaylist(key);
+        await renderPlaylist();
+      });
+
+      actions.append(playBtn, favBtn, removeBtn);
+      item.appendChild(actions);
+      container.appendChild(item);
+    }
+  }
+
+  (function initMovableButton() {
+    const btn = document.getElementById('musicButton');
+    if (!btn) return;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+    let hasMoved = false;
+
+    btn.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      hasMoved = false;
+      try { btn.setPointerCapture(e.pointerId); } catch(_) {}
+
+      const rect = btn.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+    });
+
+    btn.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+        hasMoved = true;
+      }
+
+      let newLeft = initialLeft + deltaX;
+      let newTop = initialTop + deltaY;
+
+      const maxLeft = window.innerWidth - btn.offsetWidth;
+      const maxTop = window.innerHeight - btn.offsetHeight;
+
+      newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+      newTop = Math.max(0, Math.min(newTop, maxTop));
+
+      btn.style.left = newLeft + 'px';
+      btn.style.top = newTop + 'px';
+      btn.style.bottom = 'auto';
+      btn.style.right = 'auto';
+    });
+
+    const stopDragging = (e) => {
+      if (isDragging) {
+        isDragging = false;
+        try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+    };
+
+    btn.addEventListener('pointerup', stopDragging);
+    btn.addEventListener('pointercancel', stopDragging);
+
+    btn.addEventListener('click', (e) => {
+      if (hasMoved) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      toggleAmbientAudio();
+    });
+  })();
+
+  // Offline build: no Firebase config. Sharing is done manually via
+  // Share/Import codes and Friend Tags — no backend of any kind.
+  const COLLAB_ENABLED = false;
+  const DB_NAME = 'MultiversePortalDB';
+  const DB_VERSION = 2;
+  const UNIVERSE_STORE = 'universes';
+  const HISTORY_STORE = 'history';
+  const MEDIA_STORE = 'media';
+  const SETTINGS_STORE = 'settings';
+  const DEFAULT_PET_NAMES = [
+    'My therapist 💔❤️‍🩹',
+    'My medicine 💔❤️‍🩹',
+    'My doctor 💔❤️‍🩹',
+    'Meriiiii deviiii jiiii 💔❤️‍🩹',
+    'Meriiiii dharm patni jiiiiii 🌚☠️🤪',
+    'Meriiiii jannnnnnnnnnnnnnn 🌚☠️🤪',
+    'Meriiiii rasmalai 🌚☠️🤪',
+    'Meriiiii darling 🌚☠️🤪',
+    'Meriiiii sweetheart 🌚☠️🤪',
+    'Meriiiii honey 🌚☠️🤪',
+    'Meriiiii sona 🌚☠️🤪',
+    'Meriiiii babygirl 🌚☠️🤪',
+    'Meriiiii goodgirl baby 🌚☠️🤪',
+    'Meriiiii princess 🌚☠️🤪',
+    'Meriiiii Queen 🌚☠️😭😭',
+    'Meriiiii malkin 🌚☠️😭😭',
+    'Meriiiii mommy 🌚☠️😭😭',
+    'Mere baccho ki ma 🌚☠️🤪',
+    'Bhais kahinki 🌚☠️😤',
+    'Gand chatoli 😤☠️',
+    'Motki kahinki 😤☠️',
+    'Mere poto ki dadi 🌚☠️🤪'
+  ];
+  let PET_NAMES = DEFAULT_PET_NAMES.slice();
+
+  async function loadTapNames(){
+    const saved = await loadSetting('tapNames');
+    PET_NAMES = (Array.isArray(saved) && saved.length) ? saved : DEFAULT_PET_NAMES.slice();
+  }
+
+  async function saveTapNames(list){
+    const cleaned = list.map(s => s.trim()).filter(Boolean);
+    PET_NAMES = cleaned.length ? cleaned : DEFAULT_PET_NAMES.slice();
+    await saveSetting('tapNames', cleaned.length ? cleaned : null);
+  }
+
+  async function resetTapNames(){
+    PET_NAMES = DEFAULT_PET_NAMES.slice();
+    await saveSetting('tapNames', null);
+  }
+
+  const $ = id => document.getElementById(id);
+
+  // ---- Customizable text theme -------------------------------------------------
+  // Every visible label/title in the app is driven from this map so the whole UI
+  // can be renamed without touching code. Defaults match the original copy.
+  const DEFAULT_TEXT = {
+    logoMain: 'THE MULTIVERSE',
+    logoSub: 'PORTAL',
+    navHistory: 'History',
+    navShare: 'Share',
+    navAdd: '+ Add',
+    heroTitleLead: 'Enter the ',
+    heroTitleHighlight: 'unknown.',
+    heroSubtitle: 'Tap anywhere for soft circles & names. Build, customize and expand your multiverse.',
+    heroCreateBtn: '✦ Create Universe',
+    heroPortalBtn: '🌌 Customize Multiverse',
+    listTitle: 'Your Universes',
+    searchPlaceholder: 'Search...',
+    emptyList: '🌌 No universes yet.<br>Click “+ Add” to create one.',
+    universePanelTitleNew: 'New Universe',
+    universePanelTitleEdit: 'Edit Universe',
+    labelName: 'Name *',
+    labelUrl: 'Website URL *',
+    labelDesc: 'Description',
+    labelMedia: 'Universe Photo / Video',
+    mediaNote: 'There is no hard-coded universe count or media count. Your browser storage quota is the only practical limit.',
+    saveUniverseBtn: 'Save Universe',
+    cancelBtn: 'Cancel',
+    portalPanelTitle: '🌌 Multiverse Appearance',
+    portalPanelHelp: 'Change the visual background of the entire portal. Use camera, gallery or files for a photo or video.',
+    savePortalBtn: 'Save Multiverse Appearance',
+    closeBtn: 'Close',
+    historyPanelTitle: '🕘 Universe History',
+    clearHistoryBtn: 'Clear History',
+    sharePanelTitle: '🔗 Share / Import',
+    sharePanelHelp: 'Share codes contain universe metadata. Large local photos/videos remain on the device. Tag a friend once, and re-importing their updated code under the same tag updates their universes instead of duplicating them — fully offline, no account needed.',
+    shareCodeLabel: 'Your Share Code',
+    copyBtn: 'Copy Code',
+    importCodeLabel: 'Paste Code to Import',
+    importBtn: 'Import',
+    textPanelTitle: '✏️ Customize Text',
+    textPanelHelp: 'Rename anything shown across the app. Leave a field blank to use the default.',
+    saveTextBtn: 'Save Text',
+    resetTextBtn: 'Reset to Default',
+    sortLabel: 'Order',
+    sortTimeNewest: 'Newest first (default)',
+    sortTimeOldest: 'Oldest first',
+    sortManual: 'Custom (drag to reorder)'
+  };
+
+  const TEXT_KEYS = Object.keys(DEFAULT_TEXT);
+  let TEXT = Object.assign({}, DEFAULT_TEXT);
+
+  function t(key){
+    const v = TEXT[key];
+    return (v === undefined || v === null || v === '') ? DEFAULT_TEXT[key] : v;
+  }
+
+  const state = {
+    db: null,
+    universes: [],
+    editingId: null,
+    pendingUniverseMedia: null,
+    removeUniverseMedia: false,
+    pendingPortalMedia: null,
+    history: [],
+    sortMode: 'newest' // 'newest' | 'oldest' | 'manual'
+  };
+
+  function uid(prefix){
+    if(window.crypto && typeof window.crypto.randomUUID === 'function') return prefix + '_' + window.crypto.randomUUID();
+    return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  }
+
+  function escapeHTML(value){
+    return String(value == null ? '' : value)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+  }
+
+  function fileType(fileOrBlob){
+    return fileOrBlob && typeof fileOrBlob.type === 'string' && fileOrBlob.type.indexOf('video/') === 0 ? 'video' : 'image';
+  }
+
+  function showMsg(elId, text, kind){
+    const el = $(elId);
+    if(!el) return;
+    el.textContent = text;
+    el.className = 'msg ' + (kind === 'error' ? 'error' : 'ok');
+  }
+
+  function clearMsg(elId){
+    const el = $(elId);
+    if(!el) return;
+    el.textContent = '';
+    el.className = 'msg';
+  }
+
+  function openDB(){
+    return new Promise((resolve,reject)=>{
+      if(!('indexedDB' in window)){
+        reject(new Error('IndexedDB unavailable')); return;
+      }
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      let settled = false;
+      // If another open tab is holding an older DB connection, the upgrade can hang
+      // indefinitely with neither onsuccess nor onerror ever firing. Surface that
+      // instead of leaving the app stuck on a silent, unexplained freeze.
+      req.onblocked = () => {
+        if(settled) return;
+        console.warn('Database open is blocked by another open tab of this app.');
+      };
+      req.onupgradeneeded = event => {
+        const db = event.target.result;
+        if(!db.objectStoreNames.contains(UNIVERSE_STORE)) db.createObjectStore(UNIVERSE_STORE, {keyPath:'id'});
+        if(!db.objectStoreNames.contains(MEDIA_STORE)) db.createObjectStore(MEDIA_STORE);
+        if(!db.objectStoreNames.contains(SETTINGS_STORE)) db.createObjectStore(SETTINGS_STORE, {keyPath:'key'});
+        if(!db.objectStoreNames.contains(HISTORY_STORE)) db.createObjectStore(HISTORY_STORE, {keyPath:'id'});
+      };
+      req.onsuccess = () => { settled = true; resolve(req.result); };
+      req.onerror = () => { settled = true; reject(req.error || new Error('Could not open database')); };
+      // Safety net: if nothing has settled after a reasonable wait (most likely a
+      // blocked upgrade from another tab), fail loudly instead of hanging forever.
+      setTimeout(() => {
+        if(!settled){
+          settled = true;
+          reject(new Error('Database open timed out — try closing other tabs of this app and reloading.'));
+        }
+      }, 8000);
+    });
+  }
+
+  function idbRequest(storeName, mode, operation){
+    return new Promise((resolve,reject)=>{
+      if(!state.db){ reject(new Error('Database is not ready')); return; }
+      const tx = state.db.transaction(storeName, mode);
+      const store = tx.objectStore(storeName);
+      let req;
+      try { req = operation(store); } catch(err){ reject(err); return; }
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error('Database request failed'));
+    });
+  }
+
+  const dbPutUniverse = u => idbRequest(UNIVERSE_STORE,'readwrite',store => store.put(u));
+  const dbDeleteUniverse = id => idbRequest(UNIVERSE_STORE,'readwrite',store => store.delete(id));
+  const dbPutMedia = (key, blob) => idbRequest(MEDIA_STORE,'readwrite',store => store.put(blob,key));
+  const dbGetMedia = key => idbRequest(MEDIA_STORE,'readonly',store => store.get(key));
+  const dbDeleteMedia = key => idbRequest(MEDIA_STORE,'readwrite',store => store.delete(key));
+  const dbGetSetting = key => idbRequest(SETTINGS_STORE,'readonly',store => store.get(key));
+  const dbPutSetting = (key,value) => idbRequest(SETTINGS_STORE,'readwrite',store => store.put({key,value}));
+  const dbDeleteSetting = key => idbRequest(SETTINGS_STORE,'readwrite',store => store.delete(key));
+  const dbPutHistory = entry => idbRequest(HISTORY_STORE,'readwrite',store => store.put(entry));
+  const dbGetAllHistory = () => new Promise((resolve,reject)=>{
+    if(!state.db){ resolve([]); return; }
+    const tx = state.db.transaction(HISTORY_STORE,'readonly');
+    const req = tx.objectStore(HISTORY_STORE).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+  const dbClearHistory = () => new Promise((resolve,reject)=>{
+    if(!state.db){ resolve(); return; }
+    const tx = state.db.transaction(HISTORY_STORE,'readwrite');
+    const req = tx.objectStore(HISTORY_STORE).clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+
+  function normalizeCode(raw){
+    return String(raw || '').trim().toUpperCase().replace(/\s+/g,'');
+  }
+
+  function validLinkCode(raw){
+    const code = normalizeCode(raw);
+    return /^[A-Z0-9][A-Z0-9_-]{0,31}$/.test(code) ? code : null;
+  }
+
+  // Offline build: there is no realtime backend, so Link-style codes are never
+  // "ready" — this exists only so importShare() can tell the difference between
+  // a friend-tag share code and a Link-style code, and explain the offline
+  // build doesn't support the latter, instead of just failing silently.
+  function firebaseReady(){ return false; }
+
+  function handleJoinHash(){ /* no-op in the offline build — Link codes aren't supported */ }
+
+  async function loadUniverses(){
+    const rows = await new Promise((resolve,reject)=>{
+      if(!state.db){ resolve([]); return; }
+      const tx = state.db.transaction(UNIVERSE_STORE,'readonly');
+      const req = tx.objectStore(UNIVERSE_STORE).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+    state.universes = Array.isArray(rows) ? rows : [];
+  }
+
+  async function loadHistory(){
+    const rows = await dbGetAllHistory();
+    state.history = Array.isArray(rows) ? rows.sort((a,b)=>(b.time||0)-(a.time||0)) : [];
+  }
+
+  async function addHistory(type, details){
+    const entry = Object.assign({id:uid('history'), type, time:Date.now()}, details || {});
+    await dbPutHistory(entry);
+    state.history.unshift(entry);
+  }
+
+  async function migrateLegacyLocalStorage(){
+    let old = null;
+    try{ old = localStorage.getItem('mv_meta'); }catch(err){ console.warn('Legacy localStorage unavailable:', err); return; }
+    if(!old) return;
+    try{
+      const parsed = JSON.parse(old);
+      if(Array.isArray(parsed) && parsed.length && state.universes.length === 0){
+        for(const item of parsed){
+          await dbPutUniverse({
+            id: item.id || uid('u'),
+            name: String(item.name || 'Unnamed Universe'),
+            url: String(item.url || ''),
+            description: String(item.description || item.desc || ''),
+            mediaKey: item.mediaKey || null,
+            mediaType: item.mediaType || null,
+            created: Number(item.created) || Date.now()
+          });
+        }
+        await loadUniverses();
+      }
+    }catch(err){ console.warn('Legacy metadata migration skipped:', err); }
+  }
+
+  function validURL(raw){
+    let url = String(raw || '').trim();
+    if(!url) return null;
+    // Reject anything containing whitespace outright - a real URL never has raw spaces,
+    // and letting the URL constructor silently percent-encode them hides real typos.
+    if(/\s/.test(url)) return null;
+    if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    try{
+      const parsed = new URL(url);
+      if(parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+      // A real website hostname must contain at least one dot (e.g. example.com) or be
+      // "localhost" - this catches garbage like "https://not-a-url-at-all" being accepted
+      // as a technically-valid-but-meaningless URL.
+      const host = parsed.hostname.toLowerCase();
+      if(host !== 'localhost' && !/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(host)){
+        return null;
+      }
+      return parsed.href;
+    }catch(_){ return null; }
+  }
+
+  function openPanel(id){
+    $(id).classList.remove('hidden');
+    $(id).scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function closePanels(){
+    $('universePanel').classList.add('hidden');
+    $('portalPanel').classList.add('hidden');
+    $('sharePanel').classList.add('hidden');
+    $('historyPanel').classList.add('hidden');
+    $('textPanel').classList.add('hidden');
+    $('visualThemePanel').classList.add('hidden');
+    $('songPanel').classList.add('hidden');
+    $('playlistPanel').classList.add('hidden');
+    $('tapNamesPanel').classList.add('hidden');
+  }
+
+  function resetUniverseForm(){
+    state.editingId = null;
+    state.pendingUniverseMedia = null;
+    state.removeUniverseMedia = false;
+    $('universePanelTitle').textContent = t('universePanelTitleNew');
+    $('name').value = '';
+    $('url').value = '';
+    $('desc').value = '';
+    $('uCamera').value = '';
+    $('uGallery').value = '';
+    $('uFiles').value = '';
+    showPreview($('uPreview'), null, null);
+    clearMsg('formMsg');
+  }
+
+  function openCreate(){
+    closePanels();
+    resetUniverseForm();
+    openPanel('universePanel');
+    setTimeout(() => $('name').focus(), 50);
+  }
+
+  async function openEdit(id){
+    const u = state.universes.find(item => item.id === id);
+    if(!u) return;
+    closePanels();
+    state.editingId = id;
+    state.pendingUniverseMedia = null;
+    state.removeUniverseMedia = false;
+    $('universePanelTitle').textContent = t('universePanelTitleEdit');
+    $('name').value = u.name || '';
+    $('url').value = u.url || '';
+    $('desc').value = u.description || '';
+    clearMsg('formMsg');
+    openPanel('universePanel');
+    if(u.mediaKey){
+      const blob = await dbGetMedia(u.mediaKey);
+      if(blob) showPreview($('uPreview'), blob, u.mediaType);
+      else showPreview($('uPreview'), null, null);
+    }else showPreview($('uPreview'), null, null);
+  }
+
+  function showPreview(container, blob, type){
+    clearObjectURLBucket('preview');
+    container.innerHTML = '';
+    if(!blob){
+      container.style.display = 'none';
+      return;
+    }
+    const url = createObjectURL(blob, 'preview');
+    if(!url){
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'block';
+    if(type === 'video'){
+      const v = document.createElement('video');
+      v.src = url;
+      v.controls = true;
+      v.muted = true;
+      v.playsInline = true;
+      container.appendChild(v);
+    }else{
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Preview';
+      container.appendChild(img);
+    }
+  }
+
+  const MAX_MEDIA_BYTES = 60 * 1024 * 1024; // 60MB per photo/video, keeps device storage from filling up too fast
+
+  async function hasEnoughStorage(neededBytes){
+    try{
+      if(!(navigator.storage && typeof navigator.storage.estimate === 'function')) return true; // can't check, assume OK
+      const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+      if(!quota) return true;
+      const free = quota - usage;
+      // Leave a safety margin so the browser doesn't hard-fail mid-write.
+      return free > neededBytes * 1.25;
+    }catch(_){ return true; }
+  }
+
+  function readMedia(input, target){
+    const file = input.files && input.files[0];
+    if(!file) return;
+    if(!(file.type.indexOf('image/') === 0 || file.type.indexOf('video/') === 0)){
+      showMsg(target === 'universe' ? 'formMsg' : 'pMsg', 'Choose an image or video file.', 'error');
+      input.value = '';
+      return;
+    }
+    if(file.size > MAX_MEDIA_BYTES){
+      showMsg(target === 'universe' ? 'formMsg' : 'pMsg', 'That file is ' + (file.size/1024/1024).toFixed(1) + 'MB — please choose one under 60MB so it fits in your device storage.', 'error');
+      input.value = '';
+      return;
+    }
+    if(target === 'universe'){
+      state.pendingUniverseMedia = {blob:file, type:fileType(file)};
+      showPreview($('uPreview'), file, fileType(file));
+      clearMsg('formMsg');
+    }else{
+      state.pendingPortalMedia = {blob:file, type:fileType(file)};
+      showPreview($('pPreview'), file, fileType(file));
+      clearMsg('pMsg');
+    }
+    input.value = '';
+  }
+
+  async function saveUniverse(){
+    const name = $('name').value.trim();
+    const url = validURL($('url').value);
+    const description = $('desc').value.trim();
+    if(!name){ showMsg('formMsg','Name is required.','error'); return; }
+    if(!url){ showMsg('formMsg','Please enter a valid website URL.','error'); return; }
+
+    const old = state.editingId ? state.universes.find(item => item.id === state.editingId) : null;
+    const id = old ? old.id : uid('u');
+    let mediaKey = old ? (old.mediaKey || null) : null;
+    let mediaType = old ? (old.mediaType || null) : null;
+    const newMedia = state.pendingUniverseMedia;
+    const removeMedia = state.removeUniverseMedia && !newMedia;
+    let savedNewMediaKey = null;
+
+    try{
+      if(newMedia){
+        const enough = await hasEnoughStorage(newMedia.blob.size || 0);
+        if(!enough){
+          showMsg('formMsg', 'Your device storage is nearly full. Free up space (e.g. remove an old universe or its media) before adding this file.', 'error');
+          return;
+        }
+        savedNewMediaKey = uid('media');
+        await dbPutMedia(savedNewMediaKey, newMedia.blob);
+        mediaKey = savedNewMediaKey;
+        mediaType = newMedia.type;
+      }else if(removeMedia){
+        mediaKey = null;
+        mediaType = null;
+      }
+
+      const universe = {
+        id,
+        name,
+        url,
+        description,
+        mediaKey,
+        mediaType,
+        created: old ? old.created : Date.now()
+      };
+
+      await dbPutUniverse(universe);
+      if(old && old.mediaKey && (newMedia || removeMedia)) await dbDeleteMedia(old.mediaKey);
+      await loadUniverses();
+      const afterCount = state.universes.length;
+      if(!old){
+        await addHistory('create',{name:universe.name,after:afterCount});
+      }else{
+        await addHistory('update',{label:'Updated “' + universe.name + '”'});
+      }
+      await renderHistory();
+      await render();
+      closePanels();
+      resetUniverseForm();
+    }catch(err){
+      console.error('Save universe failed:', err);
+      if(savedNewMediaKey) try{ await dbDeleteMedia(savedNewMediaKey); }catch(_){ }
+      const quotaHit = err && (err.name === 'QuotaExceededError' || /quota/i.test(err.message || ''));
+      showMsg('formMsg', quotaHit
+        ? 'Storage is full. Delete an old universe or its photo/video, then try again.'
+        : 'Could not save this universe. Please try again.', 'error');
+    }
+  }
+
+  async function deleteUniverse(id){
+    const u = state.universes.find(item => item.id === id);
+    if(!u) return;
+    if(!confirm('Delete this universe?')) return;
+    try{
+      if(u.mediaKey) await dbDeleteMedia(u.mediaKey);
+      await dbDeleteUniverse(id);
+      if(state.manualOrder && state.manualOrder.includes(id)){
+        await persistManualOrder(state.manualOrder.filter(existingId => existingId !== id));
+      }
+      await loadUniverses();
+      await addHistory('delete',{name:u.name,after:state.universes.length});
+      await renderHistory();
+      await render();
+    }catch(err){
+      console.error('Delete failed:', err);
+      alert('Could not delete this universe.');
+    }
+  }
+
+  // Manual order is a saved array of universe IDs. Any universe not in the saved
+  // order (new, or created before manual ordering was ever used) is appended at
+  // the end in newest-first order, so nothing can ever "disappear" from the list.
+  function applyManualOrder(items){
+    const order = state.manualOrder || [];
+    const byId = new Map(items.map(u => [u.id, u]));
+    const ordered = [];
+    for(const id of order){
+      const u = byId.get(id);
+      if(u){ ordered.push(u); byId.delete(id); }
+    }
+    const rest = Array.from(byId.values()).sort((a,b) => (b.created || 0) - (a.created || 0));
+    return ordered.concat(rest);
+  }
+
+  async function persistManualOrder(orderedIds){
+    state.manualOrder = orderedIds;
+    await saveSetting('manualOrder', orderedIds);
+  }
+
+  async function render(){
+    clearObjectURLBucket('card');
+    const list = $('list');
+    const q = $('search').value.trim().toLowerCase();
+    let items = state.universes
+      .filter(u => !q || String(u.name || '').toLowerCase().includes(q) || String(u.description || '').toLowerCase().includes(q) || String(u.url || '').toLowerCase().includes(q));
+
+    if(state.sortMode === 'oldest'){
+      items = items.sort((a,b) => (a.created || 0) - (b.created || 0));
+    }else if(state.sortMode === 'manual'){
+      items = applyManualOrder(items);
+    }else{
+      items = items.sort((a,b) => (b.created || 0) - (a.created || 0));
+    }
+
+    list.innerHTML = '';
+    if(!items.length){
+      list.innerHTML = '<div class="empty">' + t('emptyList') + '</div>';
+      return;
+    }
+
+    const manualMode = state.sortMode === 'manual' && !q;
+    let dragSrcId = null;
+
+    for(const u of items){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.dataset.id = u.id;
+
+      if(manualMode){
+        card.draggable = true;
+        const handle = document.createElement('div');
+        handle.className = 'dragHandle';
+        handle.textContent = '⠿';
+        handle.title = 'Drag to reorder';
+        card.appendChild(handle);
+
+        card.addEventListener('dragstart', e => {
+          dragSrcId = u.id;
+          card.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          try{ e.dataTransfer.setData('text/plain', u.id); }catch(_){}
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          dragSrcId = null;
+          // Safety net: clear any stray highlight left on a card the drag passed
+          // over but never cleanly left (e.g. dropped outside the list).
+          list.querySelectorAll('.card.dragOver').forEach(c => c.classList.remove('dragOver'));
+        });
+        card.addEventListener('dragover', e => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          card.classList.add('dragOver');
+        });
+        card.addEventListener('dragleave', () => card.classList.remove('dragOver'));
+        card.addEventListener('drop', async e => {
+          e.preventDefault();
+          card.classList.remove('dragOver');
+          if(!dragSrcId || dragSrcId === u.id) return;
+          const currentIds = Array.from(list.querySelectorAll('.card')).map(c => c.dataset.id);
+          const fromIdx = currentIds.indexOf(dragSrcId);
+          const toIdx = currentIds.indexOf(u.id);
+          if(fromIdx === -1 || toIdx === -1) return;
+          currentIds.splice(toIdx, 0, currentIds.splice(fromIdx, 1)[0]);
+          await persistManualOrder(currentIds);
+          await render();
+        });
+      }
+
+      if(u.mediaKey){
+        try{
+          const blob = await dbGetMedia(u.mediaKey);
+          if(blob){
+            const wrap = document.createElement('div');
+            wrap.className = 'cardMedia';
+            const src = createObjectURL(blob, 'card');
+            if(src){
+              if(u.mediaType === 'video'){
+                const v = document.createElement('video');
+                v.src = src;
+                v.muted = true;
+                v.loop = true;
+                v.autoplay = true;
+                v.playsInline = true;
+                wrap.appendChild(v);
+              }else{
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = u.name || 'Universe cover';
+                wrap.appendChild(img);
+              }
+              card.appendChild(wrap);
+            }
+          }
+        }catch(err){ console.warn('Media load failed:', err); }
+      }
+
+      const body = document.createElement('div');
+      body.className = 'cardBody';
+      body.innerHTML = '<div class="cardTitle">' + escapeHTML(u.name) + '</div><div class="cardDesc">' + escapeHTML(u.description || '') + '</div><div class="cardUrl">' + escapeHTML(u.url) + '</div><div class="cardCreated">🕐 Added ' + escapeHTML(formatHistoryTime(u.created)) + '</div>';
+
+      const actions = document.createElement('div');
+      actions.className = 'cardActions';
+
+      const open = document.createElement('button');
+      open.type = 'button';
+      open.className = 'btn small';
+      open.textContent = 'Open';
+      open.addEventListener('click', e => {
+        e.stopPropagation();
+        window.open(u.url, '_blank', 'noopener,noreferrer');
+      });
+
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'btn secondary small';
+      edit.textContent = 'Edit';
+      edit.addEventListener('click', e => { e.stopPropagation(); openEdit(u.id); });
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'btn danger small';
+      del.textContent = 'Delete';
+      del.addEventListener('click', e => { e.stopPropagation(); deleteUniverse(u.id); });
+
+      actions.append(open, edit, del);
+      body.appendChild(actions);
+      card.appendChild(body);
+      list.appendChild(card);
+    }
+  }
+
+  function formatHistoryTime(time){
+    try{return new Date(time).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});}
+    catch(_){return new Date(time).toLocaleString();}
+  }
+
+  async function renderHistory(){
+    const summary = $('historySummary');
+    const list = $('historyList');
+    const total = state.universes.length;
+    const imports = state.history.filter(h=>h.type==='import').reduce((sum,h)=>sum + Number(h.count||0),0);
+    const creates = state.history.filter(h=>h.type==='create').length;
+    summary.textContent = 'Current universes: ' + total + ' • Created here: ' + creates + ' • Imported: ' + imports + '. Imports are added to your existing universes; they never replace them.';
+    list.innerHTML='';
+    if(!state.history.length){
+      list.innerHTML='<div class="empty">🕘 No universe history yet.</div>';
+      return;
+    }
+    state.history.slice(0,100).forEach(h=>{
+      const item=document.createElement('div');
+      item.className='historyItem';
+      if(h.type==='import'){
+        item.innerHTML='<div class="historyTitle">📥 Imported ' + escapeHTML(h.count) + ' universe' + (Number(h.count)===1?'':'s') + '</div><div class="historyMeta">Before: ' + escapeHTML(h.before) + ' • Added: ' + escapeHTML(h.count) + ' • Now: ' + escapeHTML(h.after) + '<br>' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }else if(h.type==='create'){
+        item.innerHTML='<div class="historyTitle">✨ Created “' + escapeHTML(h.name) + '”</div><div class="historyMeta">Total universes: ' + escapeHTML(h.after) + '<br>' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }else if(h.type==='delete'){
+        item.innerHTML='<div class="historyTitle">🗑️ Deleted “' + escapeHTML(h.name) + '”</div><div class="historyMeta">Total universes: ' + escapeHTML(h.after) + '<br>' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }else if(h.type==='share'){
+        item.innerHTML='<div class="historyTitle">🔗 Created link code “' + escapeHTML(h.code) + '”</div><div class="historyMeta">' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }else if(h.type==='update'){
+        item.innerHTML='<div class="historyTitle">📝 ' + escapeHTML(h.label || 'Universe updated') + '</div><div class="historyMeta">' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }else{
+        item.innerHTML='<div class="historyTitle">📝 ' + escapeHTML(h.label || 'Universe updated') + '</div><div class="historyMeta">' + escapeHTML(formatHistoryTime(h.time)) + '</div>';
+      }
+      list.appendChild(item);
+    });
+  }
+
+  async function loadSetting(key){
+    const row = await dbGetSetting(key);
+    return row ? row.value : null;
+  }
+
+  async function saveSetting(key, value){ await dbPutSetting(key, value); }
+
+  // ---- Text theme: load/apply/save ---------------------------------------------
+  async function loadTextTheme(){
+    const saved = await loadSetting('textTheme');
+    TEXT = Object.assign({}, DEFAULT_TEXT, saved || {});
+    applyTextTheme();
+  }
+
+  function applyTextTheme(){
+    $('logoMainText').textContent = t('logoMain');
+    $('logoSubText').textContent = t('logoSub');
+    $('historyBtn').textContent = t('navHistory');
+    $('shareBtn').textContent = t('navShare');
+    $('addBtn').textContent = t('navAdd');
+    $('heroTitleLead').textContent = t('heroTitleLead');
+    $('heroTitleHighlight').textContent = t('heroTitleHighlight');
+    $('heroSubtitle').textContent = t('heroSubtitle');
+    $('createBtn').textContent = t('heroCreateBtn');
+    $('portalBtn').textContent = t('heroPortalBtn');
+    $('listTitle').textContent = t('listTitle');
+    $('search').placeholder = t('searchPlaceholder');
+    $('universePanelTitle').textContent = state.editingId ? t('universePanelTitleEdit') : t('universePanelTitleNew');
+    document.querySelector('label[for="name"]').textContent = t('labelName');
+    document.querySelector('label[for="url"]').textContent = t('labelUrl');
+    document.querySelector('label[for="desc"]').textContent = t('labelDesc');
+    $('mediaLabel').textContent = t('labelMedia');
+    $('mediaNote').textContent = t('mediaNote');
+    $('saveBtn').textContent = t('saveUniverseBtn');
+    $('cancelBtn').textContent = t('cancelBtn');
+    $('portalPanelTitle').textContent = t('portalPanelTitle');
+    $('portalPanelHelp').textContent = t('portalPanelHelp');
+    $('pSave').textContent = t('savePortalBtn');
+    $('pClose').textContent = t('closeBtn');
+    $('historyPanelTitle').textContent = t('historyPanelTitle');
+    $('clearHistory').textContent = t('clearHistoryBtn');
+    $('closeHistory').textContent = t('closeBtn');
+    $('sharePanelTitle').textContent = t('sharePanelTitle');
+    $('sharePanelHelp').textContent = t('sharePanelHelp');
+    document.querySelector('label[for="shareCode"]').textContent = t('shareCodeLabel');
+    $('copyBtn').textContent = t('copyBtn');
+    document.querySelector('label[for="importCode"]').textContent = t('importCodeLabel');
+    $('importBtn').textContent = t('importBtn');
+    $('closeShare').textContent = t('closeBtn');
+    document.querySelector('label[for="sortMode"]').textContent = t('sortLabel');
+    const sortOpts = document.querySelectorAll('#sortMode option');
+    if(sortOpts[0]) sortOpts[0].textContent = t('sortTimeNewest');
+    if(sortOpts[1]) sortOpts[1].textContent = t('sortTimeOldest');
+    if(sortOpts[2]) sortOpts[2].textContent = t('sortManual');
+  }
+
+  async function saveTextTheme(overrides){
+    // Only persist values that differ from the default, so future default
+    // improvements aren't silently masked by stale saved copies of unchanged text.
+    const toSave = {};
+    for(const key of TEXT_KEYS){
+      const v = overrides[key];
+      if(v !== undefined && v !== null && v.trim() !== '' && v !== DEFAULT_TEXT[key]){
+        toSave[key] = v;
+      }
+    }
+    await saveSetting('textTheme', toSave);
+    TEXT = Object.assign({}, DEFAULT_TEXT, toSave);
+    applyTextTheme();
+  }
+
+  async function resetTextTheme(){
+    await saveSetting('textTheme', {});
+    TEXT = Object.assign({}, DEFAULT_TEXT);
+    applyTextTheme();
+  }
+
+  // ---- Visual theme slots (customizable icons/images via Camera/Gallery/Files) --
+  // Each slot is a small visual element that defaults to an emoji/gradient and
+  // can be replaced with a user photo. The photo is stored as a normal blob in
+  // the existing `media` store (same mechanism as universe/portal media), keyed
+  // by "themeslot_<slotId>". Settings only remember WHICH slots have a custom
+  // image; the pixels live in the media store like everything else.
+  const THEME_SLOTS = [
+    { id: 'logoMark', label: 'Header Logo Mark', desc: 'The small circle next to the app name.', selector: '#logoMark', defaultEmoji: '🌌' },
+    { id: 'musicButton', label: 'Music Button', desc: 'The floating play/pause button.', selector: '#musicButton', defaultEmoji: '🌙', preserveText: true }
+  ];
+
+  function themeSlotMediaKey(slotId){ return 'themeslot_' + slotId; }
+
+  async function loadVisualTheme(){
+    clearObjectURLBucket('theme');
+    const saved = (await loadSetting('visualTheme')) || {};
+    for(const slot of THEME_SLOTS){
+      const el = document.querySelector(slot.selector);
+      if(!el) continue;
+      if(saved[slot.id]){
+        try{
+          const blob = await dbGetMedia(themeSlotMediaKey(slot.id));
+          if(blob){
+            const url = createObjectURL(blob, 'theme');
+            if(url){
+              el.style.backgroundImage = "url('" + url + "')";
+              if(!slot.preserveText) el.textContent = '';
+              continue;
+            }
+          }
+        }catch(err){ console.warn('Theme slot image load failed for', slot.id, err); }
+      }
+      // No custom image (or it failed to load) — fall back to the default emoji.
+      el.style.backgroundImage = '';
+      if(!slot.preserveText || !el.classList.contains('playing')) {
+        // Don't stomp the music button's live 🎶/🌙 state while a song is playing.
+        if(slot.id !== 'musicButton') el.textContent = slot.defaultEmoji;
+      }
+    }
+  }
+
+  async function setThemeSlotImage(slotId, blob){
+    await dbPutMedia(themeSlotMediaKey(slotId), blob);
+    const saved = (await loadSetting('visualTheme')) || {};
+    saved[slotId] = true;
+    await saveSetting('visualTheme', saved);
+    await loadVisualTheme();
+  }
+
+  async function resetThemeSlotImage(slotId){
+    try{ await dbDeleteMedia(themeSlotMediaKey(slotId)); }catch(_){}
+    const saved = (await loadSetting('visualTheme')) || {};
+    delete saved[slotId];
+    await saveSetting('visualTheme', saved);
+    await loadVisualTheme();
+  }
+
+  async function renderThemeSlotsPanel(){
+    clearObjectURLBucket('themePanel');
+    const container = $('themeSlotsList');
+    container.innerHTML = '';
+    const saved = (await loadSetting('visualTheme')) || {};
+
+    for(const slot of THEME_SLOTS){
+      const card = document.createElement('div');
+      card.className = 'themeSlotCard';
+
+      const head = document.createElement('div');
+      head.className = 'themeSlotHead';
+      const preview = document.createElement('div');
+      preview.className = 'themeSlotPreview';
+      if(saved[slot.id]){
+        try{
+          const blob = await dbGetMedia(themeSlotMediaKey(slot.id));
+          if(blob){
+            const url = createObjectURL(blob, 'themePanel');
+            if(url) preview.style.backgroundImage = "url('" + url + "')";
+          }
+        }catch(_){ preview.textContent = slot.defaultEmoji; }
+      }else{
+        preview.textContent = slot.defaultEmoji;
+      }
+      const info = document.createElement('div');
+      info.innerHTML = '<div class="themeSlotName">' + escapeHTML(slot.label) + '</div><div class="themeSlotDesc">' + escapeHTML(slot.desc) + '</div>';
+      head.append(preview, info);
+
+      const pickRow = document.createElement('div');
+      pickRow.className = 'mediaPickGrid';
+      const camLabel = document.createElement('label');
+      camLabel.className = 'filePick';
+      camLabel.textContent = '📷 Camera';
+      const camInput = document.createElement('input');
+      camInput.type = 'file'; camInput.accept = 'image/*'; camInput.setAttribute('capture','environment');
+      camLabel.appendChild(camInput);
+
+      const galLabel = document.createElement('label');
+      galLabel.className = 'filePick';
+      galLabel.textContent = '🖼️ Gallery';
+      const galInput = document.createElement('input');
+      galInput.type = 'file'; galInput.accept = 'image/*';
+      galLabel.appendChild(galInput);
+
+      const fileLabel = document.createElement('label');
+      fileLabel.className = 'filePick';
+      fileLabel.textContent = '📁 Files';
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file'; fileInput.accept = 'image/*';
+      fileLabel.appendChild(fileInput);
+
+      pickRow.append(camLabel, galLabel, fileLabel);
+
+      const handlePick = async (input) => {
+        const file = input.files && input.files[0];
+        if(!file) return;
+        if(file.type.indexOf('image/') !== 0){
+          showMsg('visualThemeMsg', 'Please choose an image file.', 'error');
+          input.value = '';
+          return;
+        }
+        if(file.size > MAX_MEDIA_BYTES){
+          showMsg('visualThemeMsg', 'That image is too large (max 60MB).', 'error');
+          input.value = '';
+          return;
+        }
+        const enough = await hasEnoughStorage(file.size);
+        if(!enough){
+          showMsg('visualThemeMsg', 'Device storage is nearly full. Free up space and try again.', 'error');
+          input.value = '';
+          return;
+        }
+        try{
+          await setThemeSlotImage(slot.id, file);
+          await renderThemeSlotsPanel();
+          showMsg('visualThemeMsg', slot.label + ' updated.', 'ok');
+        }catch(err){
+          console.error('Theme slot save failed:', err);
+          showMsg('visualThemeMsg', 'Could not save that image. Please try again.', 'error');
+        }
+      };
+      camInput.addEventListener('change', () => handlePick(camInput));
+      galInput.addEventListener('change', () => handlePick(galInput));
+      fileInput.addEventListener('change', () => handlePick(fileInput));
+
+      const resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'btn danger small';
+      resetBtn.textContent = 'Reset to default';
+      resetBtn.style.marginTop = '8px';
+      resetBtn.addEventListener('click', async () => {
+        try{
+          await resetThemeSlotImage(slot.id);
+          await renderThemeSlotsPanel();
+          showMsg('visualThemeMsg', slot.label + ' reset to default.', 'ok');
+        }catch(err){
+          console.error('Theme slot reset failed:', err);
+          showMsg('visualThemeMsg', 'Could not reset. Please try again.', 'error');
+        }
+      });
+
+      card.append(head, pickRow, resetBtn);
+      container.appendChild(card);
+    }
+  }
+
+  async function loadPortalMedia(){
+    const setting = await loadSetting('portalMedia');
+    if(!setting){
+      showPreview($('pPreview'), null, null);
+      return;
+    }
+    try{
+      const blob = await dbGetMedia(setting.mediaKey);
+      if(blob) showPreview($('pPreview'), blob, setting.mediaType);
+      else showPreview($('pPreview'), null, null);
+    }catch(err){ console.warn('Portal preview failed:', err); }
+  }
+
+  async function applyPortalBackground(){
+    const setting = await loadSetting('portalMedia');
+    const img = $('bgImage');
+    const video = $('bgVideo');
+
+    if(portalBgObjectUrl){
+      try { (window.URL || window.webkitURL).revokeObjectURL(portalBgObjectUrl); } catch(_) {}
+      portalBgObjectUrl = null;
+    }
+
+    if(!setting){
+      img.style.display = 'none';
+      video.style.display = 'none';
+      img.src = '';
+      video.src = '';
+      return;
+    }
+
+    try{
+      const blob = await dbGetMedia(setting.mediaKey);
+      if(!blob){
+        img.style.display = 'none';
+        video.style.display = 'none';
+        img.src = '';
+        video.src = '';
+        return;
+      }
+      const url = (window.URL || window.webkitURL).createObjectURL(blob);
+      if(!url){
+        img.style.display = 'none';
+        video.style.display = 'none';
+        return;
+      }
+      portalBgObjectUrl = url;
+
+      if(setting.mediaType === 'video'){
+        img.style.display = 'none';
+        img.src = '';
+        video.src = url;
+        video.style.display = 'block';
+        video.play().catch(() => {});
+      }else{
+        video.style.display = 'none';
+        video.pause();
+        video.src = '';
+        img.src = url;
+        img.style.display = 'block';
+      }
+    }catch(err){ console.warn('Background load failed:', err); }
+  }
+
+  async function updateStorageInfo(){
+    const el = $('storageInfo');
+    if(!el) return;
+    try{
+      if(!(navigator.storage && typeof navigator.storage.estimate === 'function')){
+        el.textContent = '';
+        return;
+      }
+      const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+      if(!quota){ el.textContent = ''; return; }
+      const usedMB = (usage/1024/1024).toFixed(0);
+      const quotaMB = (quota/1024/1024).toFixed(0);
+      const pct = Math.min(100, Math.round((usage/quota)*100));
+      el.textContent = 'Device storage used by this app: ' + usedMB + 'MB of ' + quotaMB + 'MB (' + pct + '%).' +
+        (pct >= 85 ? ' Storage is nearly full — delete an old universe or its media to free up space.' : '');
+    }catch(_){ el.textContent = ''; }
+  }
+
+  async function openPortal(){
+    closePanels();
+    state.pendingPortalMedia = null;
+    clearMsg('pMsg');
+    await loadPortalMedia();
+    await updateStorageInfo();
+    openPanel('portalPanel');
+  }
+
+  async function savePortal(){
+    const pending = state.pendingPortalMedia;
+    const existing = await loadSetting('portalMedia');
+
+    if(!pending && !existing){
+      showMsg('pMsg','Choose a photo or video first.','error');
+      return;
+    }
+
+    if(pending){
+      // Because the old media isn't deleted until the new one is safely written (see
+      // below), a *replacement* briefly needs room for both files at once.
+      let existingMediaSize = 0;
+      if(existing && existing.mediaKey){
+        try{
+          const oldBlob = await dbGetMedia(existing.mediaKey);
+          if(oldBlob && typeof oldBlob.size === 'number') existingMediaSize = oldBlob.size;
+        }catch(_){ /* if we can't read it, just don't add to the estimate */ }
+      }
+      const enough = await hasEnoughStorage((pending.blob.size || 0) + existingMediaSize);
+      if(!enough){
+        showMsg('pMsg','Your device storage is nearly full. Free up space — for example, remove the current portal media or delete an old universe — then try again.','error');
+        return;
+      }
+      let newKey = null;
+      try{
+        newKey = uid('portal_media');
+        // Write the new media FIRST. Only delete the old one after the new one is
+        // confirmed saved, so a failed write never leaves the user with no background
+        // at all (deleting-then-writing risks losing both if the write then fails).
+        await dbPutMedia(newKey, pending.blob);
+        await saveSetting('portalMedia',{mediaKey:newKey,mediaType:pending.type});
+        if(existing && existing.mediaKey && existing.mediaKey !== newKey) await dbDeleteMedia(existing.mediaKey);
+        state.pendingPortalMedia = null;
+      }catch(err){
+        console.error('Portal save failed:', err);
+        if(newKey) try{ await dbDeleteMedia(newKey); }catch(_){ }
+        const quotaHit = err && (err.name === 'QuotaExceededError' || /quota/i.test(err.message || ''));
+        showMsg('pMsg', quotaHit
+          ? 'Storage is full. Delete an old universe or its media, then try again.'
+          : 'Could not save portal media. Please try again.', 'error');
+        return;
+      }
+    }
+
+    await loadPortalMedia();
+    await applyPortalBackground();
+    closePanels();
+  }
+
+  async function removePortal(){
+    try{
+      const previous = await loadSetting('portalMedia');
+      if(previous && previous.mediaKey) await dbDeleteMedia(previous.mediaKey);
+      await dbDeleteSetting('portalMedia');
+      state.pendingPortalMedia = null;
+      showPreview($('pPreview'), null, null);
+      await applyPortalBackground();
+      showMsg('pMsg','Portal media removed.','ok');
+    }catch(err){
+      console.error('Portal remove failed:', err);
+      showMsg('pMsg','Could not remove portal media.','error');
+    }
+  }
+
+  // ---- Share code format ------------------------------------------------
+  // v1 (legacy) codes were a bare JSON array of universes. v2 codes wrap that
+  // same array alongside every customization setting (text theme, tap names,
+  // custom song + playlist, and visual theme images) so importing a code
+  // brings the whole look-and-feel across, not just the universe list. Old v1
+  // codes still decode correctly — decodeShare() detects the shape and treats
+  // a bare array as "universes only, no theme data" rather than failing.
+  async function blobToBase64(blob){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result); // data: URL, includes mime prefix
+      reader.onerror = () => reject(reader.error || new Error('Could not read file'));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function base64ToBlob(dataUrl){
+    const [header, base64] = dataUrl.split(',');
+    const mimeMatch = header.match(/data:([^;]+);base64/);
+    const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], {type: mime});
+  }
+
+  async function encodeShare(){
+    const universes = state.universes.map(u => ({id:u.id,name:u.name,url:u.url,description:u.description,created:u.created}));
+
+    const themeImages = {};
+    for(const slot of THEME_SLOTS){
+      try{
+        const blob = await dbGetMedia(themeSlotMediaKey(slot.id));
+        if(blob) themeImages[slot.id] = await blobToBase64(blob);
+      }catch(_){ /* slot has no custom image — skip it */ }
+    }
+
+    const payload = {
+      __v: 2,
+      universes,
+      theme: {
+        textTheme: (await loadSetting('textTheme')) || {},
+        tapNames: (await loadSetting('tapNames')) || null,
+        customSong: (await loadSetting('customSong')) || null,
+        songPlaylist: (await loadSetting('songPlaylist')) || [],
+        visualTheme: (await loadSetting('visualTheme')) || {},
+        themeImages
+      }
+    };
+    const json = JSON.stringify(payload);
+    return btoa(unescape(encodeURIComponent(json)));
+  }
+
+  function decodeShare(code){
+    const parsed = JSON.parse(decodeURIComponent(escape(atob(code))));
+    // Legacy v1 codes are a bare array — normalize to the same shape so
+    // callers never need to branch on version.
+    if(Array.isArray(parsed)) return {__v: 1, universes: parsed, theme: null};
+    return parsed;
+  }
+
+  async function importThemeFromShare(theme){
+    if(!theme) return {imported: []};
+    const imported = [];
+
+    if(theme.textTheme && Object.keys(theme.textTheme).length){
+      await saveTextTheme(theme.textTheme);
+      imported.push('text theme');
+    }
+    if(Array.isArray(theme.tapNames) && theme.tapNames.length){
+      await saveTapNames(theme.tapNames);
+      imported.push('tap-anywhere names');
+    }
+    if(theme.customSong && theme.customSong.platform && theme.customSong.id){
+      teardownCurrentPlayer();
+      currentSong = theme.customSong;
+      await saveSetting('customSong', currentSong);
+      imported.push('ambient song');
+    }
+    if(Array.isArray(theme.songPlaylist) && theme.songPlaylist.length){
+      const existing = await loadPlaylist();
+      const existingKeys = new Set(existing.map(playlistKeyFor));
+      const merged = existing.concat(theme.songPlaylist.filter(s => !existingKeys.has(playlistKeyFor(s))));
+      await savePlaylist(merged);
+      imported.push('playlist');
+    }
+    if(theme.visualTheme && theme.themeImages){
+      const savedSlots = {};
+      for(const slot of THEME_SLOTS){
+        const dataUrl = theme.themeImages[slot.id];
+        if(theme.visualTheme[slot.id] && dataUrl){
+          try{
+            const blob = base64ToBlob(dataUrl);
+            await dbPutMedia(themeSlotMediaKey(slot.id), blob);
+            savedSlots[slot.id] = true;
+          }catch(err){ console.warn('Could not import theme image for', slot.id, err); }
+        }
+      }
+      if(Object.keys(savedSlots).length){
+        const current = (await loadSetting('visualTheme')) || {};
+        await saveSetting('visualTheme', Object.assign(current, savedSlots));
+        await loadVisualTheme();
+        imported.push('visual theme (icons)');
+      }
+    }
+    return {imported};
+  }
+
+  // ---- Friend Tags ---------------------------------------------------------
+  // A Friend Tag lets someone re-import an updated share code from the same
+  // person later without any code-matching ceremony: the tag just remembers
+  // which of the friend's universes are already here, so a fresh paste updates
+  // those in place (by the sender's own universe id) instead of duplicating
+  // them, and adds anything new. No Firebase or ongoing connection involved —
+  // this is a manual "paste again when you have news" workflow, entirely local.
+  function normalizeFriendTag(raw){
+    return String(raw || '').trim().slice(0, 40);
+  }
+
+  async function loadFriendTags(){
+    return (await loadSetting('friendTags')) || {};
+  }
+
+  async function saveFriendTags(tags){
+    await saveSetting('friendTags', tags);
+  }
+
+  async function renderFriendTags(){
+    const container = $('friendTagsList');
+    const tags = await loadFriendTags();
+    const names = Object.keys(tags).sort((a,b) => (tags[b].lastImportedAt||0) - (tags[a].lastImportedAt||0));
+    if(!names.length){
+      container.innerHTML = '<div class="smallNote">No friend tags yet — add one when you import a code.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    for(const name of names){
+      const entry = tags[name];
+      const count = (entry.universeIds || []).length;
+      const when = entry.lastImportedAt ? formatHistoryTime(entry.lastImportedAt) : '';
+
+      const item = document.createElement('div');
+      item.className = 'historyItem';
+      item.innerHTML = '<div class="historyTitle">🏷️ ' + escapeHTML(name) + '</div><div class="historyMeta">' + count + ' universe' + (count===1?'':'s') + (when ? ' • last updated ' + escapeHTML(when) : '') + '</div>';
+
+      const actions = document.createElement('div');
+      actions.className = 'cardActions';
+      actions.style.marginTop = '8px';
+
+      const useBtn = document.createElement('button');
+      useBtn.type = 'button';
+      useBtn.className = 'btn secondary small';
+      useBtn.textContent = 'Use this tag';
+      useBtn.addEventListener('click', () => {
+        $('importTag').value = name;
+        $('importCode').focus();
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn danger small';
+      removeBtn.textContent = 'Forget tag';
+      removeBtn.addEventListener('click', async () => {
+        if(!confirm('Forget the "' + name + '" tag? Their universes already imported will stay — this only removes the tag label so future imports from them won\'t auto-update in place.')) return;
+        const current = await loadFriendTags();
+        delete current[name];
+        await saveFriendTags(current);
+        await renderFriendTags();
+      });
+
+      actions.append(useBtn, removeBtn);
+      item.appendChild(actions);
+      container.appendChild(item);
+    }
+  }
+
+  async function importShare(){
+    const raw = $('importCode').value.trim();
+    if(!raw){ alert('Paste a share code, invite code, or invite link first.'); return; }
+    const tagRaw = normalizeFriendTag($('importTag').value);
+    const maybeCode = validLinkCode(raw);
+
+    try{
+      const decoded = decodeShare(raw);
+      const universesData = Array.isArray(decoded.universes) ? decoded.universes : null;
+      if(!universesData) throw new Error('Invalid code');
+
+      const tags = await loadFriendTags();
+      const existingEntry = tagRaw ? (tags[tagRaw] || {universeIds:[]}) : null;
+      // Universes previously imported under this exact tag, indexed by the
+      // sender's own id (the id inside the pasted code), so a re-import can
+      // recognize "this is the same universe, just updated" and overwrite it
+      // instead of creating a duplicate.
+      const knownBySenderId = new Map();
+      if(existingEntry){
+        for(const u of state.universes){
+          if(u.importedFromTag === tagRaw && u.senderUniverseId){
+            knownBySenderId.set(u.senderUniverseId, u.id);
+          }
+        }
+      }
+
+      const before = state.universes.length;
+      let added = 0, updated = 0;
+      const seenLocalIds = [];
+      for(const item of universesData){
+        const url = validURL(String(item.url || ''));
+        if(!url) continue;
+        const senderUniverseId = item.id ? String(item.id) : null;
+        const existingLocalId = senderUniverseId ? knownBySenderId.get(senderUniverseId) : null;
+
+        if(existingLocalId){
+          const current = state.universes.find(u => u.id === existingLocalId);
+          const merged = Object.assign({}, current, {
+            name: String(item.name || current.name || 'Unnamed Universe'),
+            url,
+            description: String(item.description || ''),
+            senderUniverseId,
+            importedFromTag: tagRaw || current.importedFromTag
+          });
+          await dbPutUniverse(merged);
+          seenLocalIds.push(existingLocalId);
+          updated++;
+        }else{
+          const imported = {
+            id: uid('import'),
+            name: String(item.name || 'Unnamed Universe'),
+            url,
+            description: String(item.description || ''),
+            mediaKey: null,
+            mediaType: null,
+            created: Date.now() + added,
+            senderUniverseId,
+            importedFromTag: tagRaw || undefined
+          };
+          await dbPutUniverse(imported);
+          seenLocalIds.push(imported.id);
+          added++;
+        }
+      }
+
+      if(tagRaw){
+        tags[tagRaw] = {
+          universeIds: Array.from(new Set([...(existingEntry.universeIds||[]), ...seenLocalIds])),
+          lastImportedAt: Date.now()
+        };
+        await saveFriendTags(tags);
+      }
+
+      const themeResult = await importThemeFromShare(decoded.theme);
+
+      await loadUniverses();
+      const after = state.universes.length;
+      await addHistory('import',{count:added,before,after});
+      await renderHistory();
+      await render();
+      await renderFriendTags();
+      $('sharePanel').classList.add('hidden');
+      $('importCode').value='';
+      $('importTag').value='';
+
+      const parts = [];
+      if(added) parts.push(added + ' new universe' + (added===1?'':'s'));
+      if(updated) parts.push(updated + ' updated');
+      if(themeResult.imported.length) parts.push(themeResult.imported.join(', ') + ' imported');
+      if(!parts.length) alert('No valid universes were found in that share code.');
+      else alert(parts.join('. ') + '. Your other ' + (before - updated) + ' existing universe' + ((before-updated)===1?'':'s') + ' were kept unchanged.');
+    }catch(err){
+      console.error('Import failed:', err);
+      if(maybeCode){
+        alert('That looks like a short Link code, but this build of the app is fully offline and doesn\'t support realtime Link codes. Ask your friend for a full Share Code instead (from their Share panel), or give this import a Friend Tag above and ask them to send you an updated Share Code whenever they add something new.');
+      }else{
+        alert('Enter a valid share code (from the Share panel of the app you got this from).');
+      }
+    }
+  }
+
+  async function copyShare(){
+    const field = $('shareCode');
+    const value = field.value;
+    if(!value) return;
+
+    try{
+      if(navigator.clipboard && typeof navigator.clipboard.writeText === 'function'){
+        await navigator.clipboard.writeText(value);
+        alert('Share code copied!');
+        return;
+      }
+    }catch(err){ console.warn('Clipboard API unavailable:', err); }
+
+    try{
+      field.focus();
+      field.select();
+      field.setSelectionRange(0, field.value.length);
+      const copied = document.execCommand('copy');
+      if(copied){
+        alert('Share code copied!');
+        return;
+      }
+    }catch(err){ console.warn('Legacy copy failed:', err); }
+
+    field.focus();
+    field.select();
+    alert('Code selected — copy it manually from your selection menu.');
+  }
+
+  function spawnTapEffects(x,y){
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 950);
+
+    const text = document.createElement('div');
+    text.className = 'floatText';
+    text.textContent = PET_NAMES[Math.floor(Math.random() * PET_NAMES.length)];
+    text.style.left = x + 'px';
+    text.style.top = y + 'px';
+    text.style.color = ['#f0abfc','#c084fc','#e879f9','#f9a8d4'][Math.floor(Math.random() * 4)];
+    document.body.appendChild(text);
+    setTimeout(() => text.remove(), 2800);
+  }
+
+  function bindFileInput(id,target){ 
+    const el = $(id);
+    if(el) el.addEventListener('change', event => readMedia(event.target,target)); 
+  }
+
+  $('addBtn').addEventListener('click', openCreate);
+  $('createBtn').addEventListener('click', openCreate);
+  $('cancelBtn').addEventListener('click', () => { resetUniverseForm(); closePanels(); });
+  $('saveBtn').addEventListener('click', saveUniverse);
+  $('search').addEventListener('input', render);
+  $('portalBtn').addEventListener('click', openPortal);
+  $('pSave').addEventListener('click', savePortal);
+  $('pRemove').addEventListener('click', removePortal);
+  $('pClose').addEventListener('click', () => closePanels());
+  
+  bindFileInput('uCamera','universe');
+  bindFileInput('uGallery','universe');
+  bindFileInput('uFiles','universe');
+  bindFileInput('pCamera','portal');
+  bindFileInput('pGallery','portal');
+  bindFileInput('pFiles','portal');
+
+  $('uRemoveMedia').addEventListener('click', () => { 
+    state.pendingUniverseMedia = null; 
+    state.removeUniverseMedia = true; 
+    $('uCamera').value = ''; 
+    $('uGallery').value = ''; 
+    $('uFiles').value = ''; 
+    showPreview($('uPreview'),null,null); 
+    clearMsg('formMsg'); 
+  });
+  
+  $('historyBtn').addEventListener('click', async () => {
+    closePanels();
+    $('historyPanel').classList.remove('hidden');
+    $('historyPanel').scrollIntoView({behavior:'smooth',block:'center'});
+    try{
+      if(!state.db){
+        $('historySummary').textContent = 'History is unavailable right now — the local database could not be opened on this device/browser.';
+        $('historyList').innerHTML = '';
+        return;
+      }
+      await loadHistory();
+      await renderHistory();
+    }catch(err){
+      console.error('Loading history failed:', err);
+      $('historySummary').textContent = 'Could not load history.';
+      $('historyList').innerHTML = '';
+    }
+  });
+  
+  $('closeHistory').addEventListener('click', () => $('historyPanel').classList.add('hidden'));
+  
+  $('clearHistory').addEventListener('click', async () => { 
+    if(!confirm('Clear history only? Your universes will NOT be deleted.')) return; 
+    try{ await dbClearHistory(); state.history=[]; await renderHistory(); }catch(err){ alert('Could not clear history.'); } 
+  });
+  
+  $('shareBtn').addEventListener('click', async () => { 
+    closePanels(); 
+    $('sharePanel').classList.remove('hidden'); 
+    $('shareCode').value = 'Generating...';
+    $('shareCode').value = await encodeShare(); 
+    await renderFriendTags();
+    $('sharePanel').scrollIntoView({behavior:'smooth',block:'center'}); 
+  });
+  
+  $('closeShare').addEventListener('click', () => $('sharePanel').classList.add('hidden'));
+  $('copyBtn').addEventListener('click', copyShare);
+  $('importBtn').addEventListener('click', importShare);
+
+  $('sortMode').addEventListener('change', async () => {
+    state.sortMode = $('sortMode').value;
+    await saveSetting('sortMode', state.sortMode);
+    await render();
+  });
+
+  // ---- Text customization panel --------------------------------------------
+  // Friendly group labels for the raw TEXT_KEYS, purely for organizing the form —
+  // does not affect what gets saved.
+  const TEXT_FIELD_GROUPS = [
+    { title: 'Header & Navigation', keys: ['logoMain','logoSub','navHistory','navShare','navAdd'] },
+    { title: 'Hero Section', keys: ['heroTitleLead','heroTitleHighlight','heroSubtitle','heroCreateBtn','heroPortalBtn'] },
+    { title: 'Universe List', keys: ['listTitle','searchPlaceholder','emptyList','sortLabel','sortTimeNewest','sortTimeOldest','sortManual'] },
+    { title: 'Create / Edit Universe', keys: ['universePanelTitleNew','universePanelTitleEdit','labelName','labelUrl','labelDesc','labelMedia','mediaNote','saveUniverseBtn','cancelBtn'] },
+    { title: 'Multiverse Appearance', keys: ['portalPanelTitle','portalPanelHelp','savePortalBtn'] },
+    { title: 'History', keys: ['historyPanelTitle','clearHistoryBtn'] },
+    { title: 'Share / Import', keys: ['sharePanelTitle','sharePanelHelp','shareCodeLabel','copyBtn','importCodeLabel','importBtn'] },
+    { title: 'This Panel', keys: ['textPanelTitle','textPanelHelp','saveTextBtn','resetTextBtn'] },
+    { title: 'Shared', keys: ['closeBtn'] }
+  ];
+
+  function buildTextFields(){
+    const container = $('textFields');
+    container.innerHTML = '';
+    for(const group of TEXT_FIELD_GROUPS){
+      const heading = document.createElement('div');
+      heading.className = 'label';
+      heading.style.marginTop = '14px';
+      heading.textContent = group.title;
+      container.appendChild(heading);
+      for(const key of group.keys){
+        const row = document.createElement('div');
+        row.className = 'group';
+        const input = document.createElement('input');
+        input.className = 'input';
+        input.type = 'text';
+        input.dataset.textKey = key;
+        input.placeholder = DEFAULT_TEXT[key];
+        input.value = (TEXT[key] && TEXT[key] !== DEFAULT_TEXT[key]) ? TEXT[key] : '';
+        input.autocomplete = 'off';
+        row.appendChild(input);
+        container.appendChild(row);
+      }
+    }
+  }
+
+  $('textBtn').addEventListener('click', () => {
+    closePanels();
+    buildTextFields();
+    $('tapNamesArea').value = (PET_NAMES === DEFAULT_PET_NAMES || PET_NAMES.join('\n') === DEFAULT_PET_NAMES.join('\n')) ? '' : PET_NAMES.join('\n');
+    clearMsg('textMsg');
+    $('textPanel').classList.remove('hidden');
+    $('textPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  $('closeText').addEventListener('click', () => $('textPanel').classList.add('hidden'));
+
+  $('saveTextBtn').addEventListener('click', async () => {
+    const overrides = {};
+    $('textFields').querySelectorAll('input[data-text-key]').forEach(input => {
+      overrides[input.dataset.textKey] = input.value;
+    });
+    try{
+      await saveTextTheme(overrides);
+      showMsg('textMsg', 'Saved.', 'ok');
+    }catch(err){
+      console.error('Save text theme failed:', err);
+      showMsg('textMsg', 'Could not save text changes. Please try again.', 'error');
+    }
+  });
+
+  $('resetTextBtn').addEventListener('click', async () => {
+    if(!confirm('Reset all custom text back to the defaults?')) return;
+    try{
+      await resetTextTheme();
+      buildTextFields();
+      showMsg('textMsg', 'Reset to defaults.', 'ok');
+    }catch(err){
+      console.error('Reset text theme failed:', err);
+      showMsg('textMsg', 'Could not reset text. Please try again.', 'error');
+    }
+  });
+
+  $('saveTapNamesBtn').addEventListener('click', async () => {
+    const lines = $('tapNamesArea').value.split('\n');
+    try{
+      await saveTapNames(lines);
+      showMsg('textMsg', 'Tap names saved.', 'ok');
+    }catch(err){
+      console.error('Save tap names failed:', err);
+      showMsg('textMsg', 'Could not save tap names. Please try again.', 'error');
+    }
+  });
+
+  $('resetTapNamesBtn').addEventListener('click', async () => {
+    if(!confirm('Reset tap-anywhere names back to the built-in defaults?')) return;
+    try{
+      await resetTapNames();
+      $('tapNamesArea').value = '';
+      showMsg('textMsg', 'Tap names reset to default.', 'ok');
+    }catch(err){
+      console.error('Reset tap names failed:', err);
+      showMsg('textMsg', 'Could not reset. Please try again.', 'error');
+    }
+  });
+
+  $('visualThemeBtn').addEventListener('click', async () => {
+    closePanels();
+    clearMsg('visualThemeMsg');
+    await renderThemeSlotsPanel();
+    $('visualThemePanel').classList.remove('hidden');
+    $('visualThemePanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  $('closeVisualTheme').addEventListener('click', () => $('visualThemePanel').classList.add('hidden'));
+
+  $('tapNamesBtn').addEventListener('click', () => {
+    closePanels();
+    $('tapNamesPanelArea').value = (PET_NAMES.join('\n') === DEFAULT_PET_NAMES.join('\n')) ? '' : PET_NAMES.join('\n');
+    clearMsg('tapNamesPanelMsg');
+    $('tapNamesPanel').classList.remove('hidden');
+    $('tapNamesPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  $('closeTapNamesPanel').addEventListener('click', () => $('tapNamesPanel').classList.add('hidden'));
+
+  $('saveTapNamesPanelBtn').addEventListener('click', async () => {
+    const lines = $('tapNamesPanelArea').value.split('\n');
+    try{
+      await saveTapNames(lines);
+      showMsg('tapNamesPanelMsg', 'Saved. Try tapping anywhere on the page to see it.', 'ok');
+    }catch(err){
+      console.error('Save tap names failed:', err);
+      showMsg('tapNamesPanelMsg', 'Could not save. Please try again.', 'error');
+    }
+  });
+
+  $('resetTapNamesPanelBtn').addEventListener('click', async () => {
+    if(!confirm('Reset tap-anywhere names back to the built-in defaults?')) return;
+    try{
+      await resetTapNames();
+      $('tapNamesPanelArea').value = '';
+      showMsg('tapNamesPanelMsg', 'Reset to default.', 'ok');
+    }catch(err){
+      console.error('Reset tap names failed:', err);
+      showMsg('tapNamesPanelMsg', 'Could not reset. Please try again.', 'error');
+    }
+  });
+
+  $('songSettingsBtn').addEventListener('click', async () => {
+    closePanels();
+    clearMsg('songMsg');
+    $('songLinkInput').value = currentSong.platform === 'youtube' && currentSong.id === DEFAULT_SONG.id ? '' : (currentSong.url || '');
+    $('songPanel').classList.remove('hidden');
+    $('songPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  $('closeSongPanel').addEventListener('click', () => $('songPanel').classList.add('hidden'));
+
+  $('saveSongBtn').addEventListener('click', async () => {
+    const raw = $('songLinkInput').value.trim();
+    if(!raw){ showMsg('songMsg', 'Paste a song or video link first.', 'error'); return; }
+    try{
+      const result = await saveCustomSong(raw);
+      if(!result.ok){ showMsg('songMsg', result.error, 'error'); return; }
+      if(result.platform === 'spotify'){
+        showMsg('songMsg', 'Saved to your playlist. Spotify tracks open in their own player when you tap the music button (Spotify doesn\'t allow autoplay for regular listeners).', 'ok');
+      }else{
+        // This click is itself a real user gesture, so start playback right
+        // now instead of making the user tap the music button separately.
+        pendingPlayAfterReady = true;
+        if(result.platform === 'youtube') loadYouTubeAPI();
+        else if(result.platform === 'vimeo') loadVimeoAPI();
+        else if(result.platform === 'soundcloud') loadSoundCloudAPI();
+        showMsg('songMsg', 'Saved and playing now.', 'ok');
+      }
+    }catch(err){
+      console.error('Save song failed:', err);
+      showMsg('songMsg', 'Could not save that link. Please try again.', 'error');
+    }
+  });
+
+  $('resetSongBtn').addEventListener('click', async () => {
+    if(!confirm('Reset the ambient song back to the default track?')) return;
+    try{
+      await resetCustomSong();
+      $('songLinkInput').value = '';
+      showMsg('songMsg', 'Reset to the default song.', 'ok');
+    }catch(err){
+      console.error('Reset song failed:', err);
+      showMsg('songMsg', 'Could not reset. Please try again.', 'error');
+    }
+  });
+
+  $('openPlaylistBtn').addEventListener('click', async () => {
+    closePanels();
+    clearMsg('playlistMsg');
+    await renderPlaylist();
+    $('playlistPanel').classList.remove('hidden');
+    $('playlistPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  $('closePlaylist').addEventListener('click', () => $('playlistPanel').classList.add('hidden'));
+
+  let hasStartedAmbientOnTap = false;
+
+  document.addEventListener('pointerdown', event => {
+    if(event.target.closest('button,input,textarea,label,a')) return;
+    spawnTapEffects(event.clientX,event.clientY);
+    // Browsers require a genuine user gesture before audio can play — the first
+    // background tap is that gesture, so this is where "resume last song" fires,
+    // not on page load.
+    if(!hasStartedAmbientOnTap){
+      hasStartedAmbientOnTap = true;
+      if(!isPlayingAudio && currentSong.platform !== 'spotify'){
+        toggleAmbientAudio();
+      }
+    }
+  }, {passive:true});
+
+  async function init(){
+    // Everything in this build is local-first — there is no realtime/Firebase
+    // step at all, so there is nothing to isolate a sync failure from.
+    try{
+      state.db = await openDB();
+      await migrateLegacyLocalStorage();
+      await loadUniverses();
+      await loadHistory();
+      await renderHistory();
+      state.sortMode = (await loadSetting('sortMode')) || 'newest';
+      state.manualOrder = (await loadSetting('manualOrder')) || [];
+      $('sortMode').value = state.sortMode;
+      await loadTextTheme();
+      await loadTapNames();
+      await loadCustomSong();
+      await loadVisualTheme();
+      await render();
+      await applyPortalBackground();
+    }catch(err){
+      console.error('Portal local database initialization failed:', err);
+      $('list').innerHTML = '<div class="empty">The portal could not initialize its local database. Try opening the page in a standard browser environment (not private/incognito mode), or free up device storage.</div>';
+    }
+  }
+
+  init();
+
+  // ---- On-screen error reporting -------------------------------------------
+  // This sandbox has no way to watch a live browser console, so real bugs
+  // reported from actual testing need a way to surface here directly instead
+  // of vanishing silently. Any uncaught error or promise rejection anywhere in
+  // the app — including inside a single button's click handler — now shows a
+  // visible banner with the exact message, file line, and a "Copy error" button,
+  // so it can be reported precisely instead of guessed at.
+  function showErrorBanner(message){
+    let banner = document.getElementById('__errorBanner');
+    if(!banner){
+      banner = document.createElement('div');
+      banner.id = '__errorBanner';
+      banner.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#3b0a0a;color:#fff;padding:12px 14px;font:12px/1.5 monospace;max-height:40vh;overflow:auto;border-top:2px solid #fda4af;box-shadow:0 -10px 30px rgba(0,0,0,.5)';
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '✕ Close';
+      closeBtn.style.cssText = 'display:block;margin-bottom:8px;background:#fda4af;color:#3b0a0a;border:0;border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer';
+      closeBtn.addEventListener('click', () => banner.remove());
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = '📋 Copy error text';
+      copyBtn.style.cssText = 'display:block;margin-bottom:8px;margin-left:8px;background:#fff;color:#3b0a0a;border:0;border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer';
+      copyBtn.addEventListener('click', async () => {
+        try{ await navigator.clipboard.writeText(banner.dataset.fullText || ''); copyBtn.textContent = '✅ Copied'; }
+        catch(_){ copyBtn.textContent = 'Copy failed — select text manually'; }
+      });
+      const btnRow = document.createElement('div');
+      btnRow.style.cssText = 'display:flex;gap:8px';
+      btnRow.append(closeBtn, copyBtn);
+      banner.appendChild(btnRow);
+      const textEl = document.createElement('pre');
+      textEl.id = '__errorBannerText';
+      textEl.style.cssText = 'white-space:pre-wrap;word-break:break-word;margin:0';
+      banner.appendChild(textEl);
+      document.body.appendChild(banner);
+    }
+    const textEl = document.getElementById('__errorBannerText');
+    const line = '[' + new Date().toLocaleTimeString() + '] ' + message;
+    textEl.textContent = (textEl.textContent ? textEl.textContent + '\n\n' : '') + line;
+    banner.dataset.fullText = textEl.textContent;
+  }
+
+  window.addEventListener('error', event => {
+    showErrorBanner('JS Error: ' + event.message + '\nFile: ' + (event.filename || 'inline') + ':' + event.lineno + ':' + event.colno + (event.error && event.error.stack ? '\nStack:\n' + event.error.stack : ''));
+  });
+  window.addEventListener('unhandledrejection', event => {
+    const reason = event.reason;
+    const msg = (reason && reason.message) ? reason.message : String(reason);
+    const stack = (reason && reason.stack) ? '\nStack:\n' + reason.stack : '';
+    showErrorBanner('Unhandled Promise Rejection: ' + msg + stack);
+  });
+
+})();
+</script>
+</body>
+</html>
